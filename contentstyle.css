@@ -1,0 +1,44 @@
+#extension-invasive-kanji-cover {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background-color: #fff;
+    opacity: 0;
+    -webkit-transition: opacity 0.5s ease-out;
+    transition: opacity 0.5s ease-out;
+}
+
+#extension-invasive-kanji-question {
+    position: absolute;
+    width: 100%;
+    top: 40%;
+    line-height: 100px;
+    margin-top: -50px;
+    font-size: 100px;
+    color: #333;
+    text-align: center;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+}
+
+#extension-invasive-kanji-answer {
+    position: absolute;
+    display: block;
+    top: 50%;
+    width: 20%;
+    margin: 50px 40%;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 35px;
+    padding: 5px 10px;
+    outline: none;
+    color: #333;
+    text-align: center;
+    display: block;
+    border-radius: 3px;
+    border: solid 1px #dadada;
+    background: #fff;
+    box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
+}

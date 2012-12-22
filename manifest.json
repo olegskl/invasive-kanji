@@ -1,0 +1,22 @@
+{
+    "name": "Invasive kanji",
+    "version": "0.1",
+    "manifest_version": 2,
+    "description": "An invasive way to learn kanji.",
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "exclude_matches": [
+            "http://jisho.org/*",
+            "http://wwwjdic.org/*",
+            "http://wwwjdic.com/*",
+            "http://wwwjdic.net/*",
+            "http://*/*wwwjdic*",
+            "http://translate.google.com/*"
+        ],
+        "js": [
+            "kanjilist.js",
+            "contentscript.js"
+        ],
+        "css" : ["contentstyle.css"]
+    }]
+}
