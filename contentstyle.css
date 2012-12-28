@@ -27,8 +27,9 @@
     position: absolute;
     display: block;
     top: 50%;
+    left: 40%;
     width: 20%;
-    margin: 50px 40%;
+    margin: 50px 0 0 -10px;
     font-size: 16px;
     font-weight: bold;
     line-height: 35px;
