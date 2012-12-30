@@ -11,7 +11,8 @@
             "http://wwwjdic.com/*",
             "http://wwwjdic.net/*",
             "http://*/*wwwjdic*",
-            "http://translate.google.com/*"
+            "http://translate.google.com/*",
+            "https://*/*invasive-kanji*"
         ],
         "js": [
             "kanjilist.js",
