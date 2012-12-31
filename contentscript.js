@@ -6,6 +6,7 @@
 var redirectionURL = 'http://jisho.org/kanji/details/{q}',
     coverElement = document.createElement('div'),
     answerElement,
+    pageActiveElement, // the element that wants to have focus
     docVisibilityChange = 'visibilitychange',
     docHidden = 'hidden',
     template = '<div id="extension-invasive-kanji-question">{q}</div>' +
@@ -28,7 +29,23 @@ function areCorrectAnswers(userAnswers, correctAnswers) {
     });
 }
 
+function stealFocus() {
+    // Find the culprit:
+    pageActiveElement = document.activeElement;
+    // Steal focus from it:
+    answerElement.focus();
+    // Steal only once:
+    answerElement.removeEventListener(stealFocus);
+}
+
 function removeCover() {
+    // Remove unnecessary event listeners:
+    answerElement.removeEventListener(stealFocus);
+    // Be nice and give focus back:
+    if (pageActiveElement) {
+        pageActiveElement.focus();
+    }
+    // It's now safe to remove the cover element from thr DOM:
     coverElement.parentNode.removeChild(coverElement);
 }
 
@@ -56,6 +73,8 @@ function askQuestion(question, correctAnswers) {
     document.body.appendChild(coverElement);
 
     answerElement = document.getElementById('extension-invasive-kanji-answer');
+
+    answerElement.addEventListener('blur', stealFocus, false);
     answerElement.focus();
 
     answerElement.addEventListener('keypress', function (e) {
