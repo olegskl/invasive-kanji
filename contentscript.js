@@ -29,13 +29,22 @@ function areCorrectAnswers(userAnswers, correctAnswers) {
     });
 }
 
+function getActiveElement() {
+    return document.activeElement;
+    // return document.querySelector(':focus');
+}
+
 function stealFocus() {
     // Find the culprit:
-    pageActiveElement = document.activeElement;
-    // Steal focus from it:
-    answerElement.focus();
-    // Steal only once:
-    answerElement.removeEventListener(stealFocus);
+    if (!pageActiveElement) {
+        pageActiveElement = getActiveElement();
+    }
+    setTimeout(function () {
+        // Steal focus:
+        answerElement.focus();
+        // Be nice – if the culprit insists on having focus, don't steal again:
+        answerElement.removeEventListener(stealFocus);
+    }, 0);
 }
 
 function removeCover() {
@@ -45,7 +54,7 @@ function removeCover() {
     if (pageActiveElement) {
         pageActiveElement.focus();
     }
-    // It's now safe to remove the cover element from thr DOM:
+    // It's now safe to remove the cover element from the DOM:
     coverElement.parentNode.removeChild(coverElement);
 }
 
@@ -74,7 +83,12 @@ function askQuestion(question, correctAnswers) {
 
     answerElement = document.getElementById('extension-invasive-kanji-answer');
 
+    // Watch out for elements desiring focus:
     answerElement.addEventListener('blur', stealFocus, false);
+    // By the time the askQuestion is triggered, there's probably already an
+    // element that has received focus; let's cache it for later use:
+    pageActiveElement = getActiveElement();
+    // Now it's okay to focus the answer field:
     answerElement.focus();
 
     answerElement.addEventListener('keypress', function (e) {
