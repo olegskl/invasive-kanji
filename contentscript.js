@@ -97,7 +97,12 @@ function askQuestion(question, correctAnswers) {
 
     // Motivate user by enforcing a time limit:
     timer = setTimeout(function () {
-        performRedirect(question);
+        // Only redirect if the coverElement still exists within the DOM to
+        // prevent confusion when some script removes the coverElement making it
+        // impossible to see or to answer the question:
+        if (coverElement && coverElement.parentNode) {
+            performRedirect(question);
+        }
     }, 10000);
 }
 
