@@ -7,6 +7,7 @@ var redirectionURL = 'http://jisho.org/kanji/details/{q}',
     coverElement = document.createElement('div'),
     answerElement,
     pageActiveElement, // the element that wants to have focus
+    embeds, // flash content that is capable to sit on top of the cover element
     docVisibilityChange = 'visibilitychange',
     docHidden = 'hidden',
     template = '<div id="extension-invasive-kanji-question">{q}</div>' +
@@ -47,6 +48,25 @@ function stealFocus() {
     }, 0);
 }
 
+function hideEmbeds() {
+    embeds = Array.prototype.slice.apply(document.getElementsByTagName('embed'));
+    embeds = embeds.map(function (embed) {
+		var originalDisplay = embed.style.display || '';
+		embed.style.display = 'none';
+		return {
+			element: embed,
+			originalDisplay: originalDisplay
+		};
+    });
+}
+
+function restoreEmbeds() {
+    embeds.forEach(function (embed) {
+        embed.element.style.display = embed.originalDisplay;
+    });
+    embeds = [];
+}
+
 function removeCover() {
     // Remove unnecessary event listeners:
     answerElement.removeEventListener(stealFocus);
@@ -56,6 +76,8 @@ function removeCover() {
     }
     // It's now safe to remove the cover element from the DOM:
     coverElement.parentNode.removeChild(coverElement);
+
+    restoreEmbeds();
 }
 
 function continueToPage() {
@@ -75,6 +97,8 @@ function askQuestion(question, correctAnswers) {
 
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
+
+    hideEmbeds();
 
     coverElement.id = 'extension-invasive-kanji-cover';
     coverElement.innerHTML = template.replace('{q}', question);
