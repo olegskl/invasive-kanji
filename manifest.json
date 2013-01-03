@@ -1,6 +1,6 @@
 {
     "name": "Invasive kanji",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "manifest_version": 2,
     "description": "An invasive way to learn kanji.",
     "content_scripts": [{
