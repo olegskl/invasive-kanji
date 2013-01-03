@@ -21,7 +21,7 @@ if (document.hidden === undefined) {
 }
 
 function parseAnswer(answer) {
-    return answer.trim().split(/\s*\,\s*/);
+    return answer.trim().toLowerCase().split(/\s*\,\s*/);
 }
 
 function areCorrectAnswers(userAnswers, correctAnswers) {
@@ -148,7 +148,9 @@ function askRandomQuestion() {
     // Randomize the question:
     var entryIndex = Math.floor(Math.random() * kanjilist.length),
         entry = kanjilist[entryIndex];
-    askQuestion(entry.kanji, entry.meanings);
+    askQuestion(entry.kanji, entry.meanings.map(function (meaning) {
+        return meaning.toLowerCase();
+    }));
 }
 
 function docVisibilityHandle() {
