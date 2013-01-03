@@ -4,7 +4,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    z-index: 99999;
+    z-index: 3141592653;
     background-color: #fff;
     opacity: 0;
     -webkit-transition: opacity 0.5s ease-out;
