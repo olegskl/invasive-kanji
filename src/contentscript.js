@@ -4,7 +4,7 @@
 'use strict';
 
 var redirectionURL = 'http://jisho.org/kanji/details/{q}',
-    coverElement = document.createElement('div'),
+    coverElement = document.createElement('iframe'),
     answerElement,
     pageActiveElement, // the element that wants to have focus
     embeds, // flash content that is capable to sit on top of the cover element
@@ -32,7 +32,6 @@ function areCorrectAnswers(userAnswers, correctAnswers) {
 
 function getActiveElement() {
     return document.activeElement;
-    // return document.querySelector(':focus');
 }
 
 function stealFocus() {
@@ -98,12 +97,16 @@ function askQuestion(question, correctAnswers) {
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
 
-    hideEmbeds();
+    // hideEmbeds();
 
-    coverElement.id = 'extension-invasive-kanji-cover';
-    coverElement.innerHTML = template.replace('{q}', question);
+    // coverElement.id = 'extension-invasive-kanji-cover';
+    // coverElement.innerHTML = template.replace('{q}', question);
+
+    coverElement.src = chrome.extension.getURL('content.html');
 
     document.body.appendChild(coverElement);
+
+    return;
 
     answerElement = document.getElementById('extension-invasive-kanji-answer');
 
