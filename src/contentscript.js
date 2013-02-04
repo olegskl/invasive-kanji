@@ -1,23 +1,24 @@
 /*jslint browser: true */
-/*globals kanjilist  */
+/*globals kanjilist */
 
 'use strict';
 
 var redirectionURL = 'http://jisho.org/kanji/details/{q}',
-    coverElement = document.createElement('iframe'),
+    coverElement = document.createElement('div'),
     answerElement,
     pageActiveElement, // the element that wants to have focus
-    embeds, // flash content that is capable to sit on top of the cover element
+    embedsDisablingStyleSheet, // flash content that is capable to sit on top of the cover element
     docVisibilityChange = 'visibilitychange',
     docHidden = 'hidden',
     template = '<div id="extension-invasive-kanji-question">{q}</div>' +
         '<input type="text" id="extension-invasive-kanji-answer" placeholder=' +
         '"type the meaning...">';
 
-// Document Hidden API vendor prefixes, urghhh...
-if (document.hidden === undefined) {
-    docVisibilityChange = 'webkitvisibilitychange';
-    docHidden = 'webkitHidden';
+function isWindowsNTBelow6() {
+    var windowsVersion = navigator.appVersion &&
+            navigator.appVersion.match(/Windows NT (\d\.\d)/);
+    return (windowsVersion !== null && windowsVersion[1] &&
+            parseFloat(windowsVersion[1]) < 6);
 }
 
 function parseAnswer(answer) {
@@ -30,14 +31,10 @@ function areCorrectAnswers(userAnswers, correctAnswers) {
     });
 }
 
-function getActiveElement() {
-    return document.activeElement;
-}
-
 function stealFocus() {
     // Find the culprit:
     if (!pageActiveElement) {
-        pageActiveElement = getActiveElement();
+        pageActiveElement = document.activeElement;
     }
     setTimeout(function () {
         // Steal focus:
@@ -48,22 +45,29 @@ function stealFocus() {
 }
 
 function hideEmbeds() {
-    embeds = Array.prototype.slice.apply(document.getElementsByTagName('embed'));
-    embeds = embeds.map(function (embed) {
-		var originalDisplay = embed.style.display || '';
-		embed.style.display = 'none';
-		return {
-			element: embed,
-			originalDisplay: originalDisplay
-		};
-    });
+    embedsDisablingStyleSheet = document.createElement('style');
+    embedsDisablingStyleSheet.textContent = 'embed { display: none !important; }';
+    document.head.appendChild(embedsDisablingStyleSheet);
+  //   embeds = Array.prototype.slice.apply(document.getElementsByTagName('embed'));
+  //   embeds = embeds.map(function (embed) {
+        // var originalDisplay = embed.style.display || '';
+        // embed.style.display = 'none';
+        // return {
+            // element: embed,
+            // originalDisplay: originalDisplay
+        // };
+  //   });
 }
 
 function restoreEmbeds() {
-    embeds.forEach(function (embed) {
-        embed.element.style.display = embed.originalDisplay;
-    });
-    embeds = [];
+    if (embedsDisablingStyleSheet) {
+        document.head.removeChild(embedsDisablingStyleSheet);
+        embedsDisablingStyleSheet = null;
+    }
+    // embeds.forEach(function (embed) {
+    //     embed.element.style.display = embed.originalDisplay;
+    // });
+    // embeds = [];
 }
 
 function removeCover() {
@@ -97,16 +101,14 @@ function askQuestion(question, correctAnswers) {
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
 
-    // hideEmbeds();
+    if (isWindowsNTBelow6()) {
+        hideEmbeds();
+    }
 
-    // coverElement.id = 'extension-invasive-kanji-cover';
-    // coverElement.innerHTML = template.replace('{q}', question);
-
-    coverElement.src = chrome.extension.getURL('content.html');
+    coverElement.id = 'extension-invasive-kanji-cover';
+    coverElement.innerHTML = template.replace('{q}', question);
 
     document.body.appendChild(coverElement);
-
-    return;
 
     answerElement = document.getElementById('extension-invasive-kanji-answer');
 
@@ -114,7 +116,7 @@ function askQuestion(question, correctAnswers) {
     answerElement.addEventListener('blur', stealFocus, false);
     // By the time the askQuestion is triggered, there's probably already an
     // element that has received focus; let's cache it for later use:
-    pageActiveElement = getActiveElement();
+    pageActiveElement = document.activeElement;
     // Now it's okay to focus the answer field:
     answerElement.focus();
 
@@ -134,7 +136,7 @@ function askQuestion(question, correctAnswers) {
     setTimeout(function () {
         // Trigger CSS animation by changing the opacity setting:
         coverElement.style.opacity = '1';
-    }, 0);
+    }, 1);
 
     // Motivate user by enforcing a time limit:
     timer = setTimeout(function () {
@@ -163,6 +165,12 @@ function docVisibilityHandle() {
     document.removeEventListener(docVisibilityChange, docVisibilityHandle);
     // It is now safe to ask the question:
     askRandomQuestion();
+}
+
+// Document Hidden API vendor prefixes, urghhh...
+if (document.hidden === undefined) {
+    docVisibilityChange = 'webkitvisibilitychange';
+    docHidden = 'webkitHidden';
 }
 
 if (document[docHidden]) {
