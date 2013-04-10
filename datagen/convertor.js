@@ -3,8 +3,9 @@
 'use strict';
 
 var fs = require('fs'), // filesystem
-    utils = require('utils'), // utilities
-    eol = /\r?\n/; // end-of-line marker regex
+    util = require('util'), // utilities
+    eol = /\r?\n/, // end-of-line marker regex
+    kana = /[\u3041-\u3096|\u30A1-\u30FA]/;
 
 /**
  * Default callback.
@@ -33,13 +34,10 @@ function getField(identification, line) {
 /**
  * Obtains a "grade" field value from a given line of a kanjidic file.
  * @param  {String} line    Any line from the kanjidic file.
- * @return {Number|Boolean} The grade Number or Boolean FALSE on failure.
+ * @return {String|Boolean} The grade String or Boolean FALSE on failure.
  */
 function getGrade(line) {
-    var grade = getField('G', line);
-    return (grade)
-        ? parseInt(grade, 10)
-        : false;
+    return getField('G', line);
 }
 
 /**
@@ -51,8 +49,11 @@ function getGrade(line) {
 function parseLine(line, options) {
 
     var grade, // placeholder for kanji grade
-        meanings, // placeholder for a list of meanings for a given term
-        index = 0; // search helper
+        meanings, // placeholder for a list of meanings of a given term
+        readings, // placeholder for a list of readings of a given term
+        index = 0, // search helper
+        firstKanaIndex, // index of first occurence of any kana
+        nanoriMarkIndex; // T1
 
     // Non-string "line" argument is unacceptable:
     if (typeof line !== 'string') {
@@ -61,7 +62,8 @@ function parseLine(line, options) {
 
     // The "options" argument that is passed but not as Object is unacceptable:
     if (arguments.length > 1 && typeof options !== 'object') {
-        throw new TypeError('Expected "options" argument to be an Object');
+        // throw new TypeError('Expected "options" argument to be an Object');
+        options = {};
     }
 
     // There's nothing wrong with not passing the "options" argument at all,
@@ -74,18 +76,22 @@ function parseLine(line, options) {
     line.trim();
 
     // Lines starting with "#" are comments, avoid them:
-    if (line.substr(0, 1) === '#') {
-        return false;
-    }
+    if (line.substr(0, 1) === '#') { return false; }
 
-    if (options.grades) {
-        if (!utils.isArray(options.grades)) {
-            throw new TypeError('Expected "grades" option to be an Array.');
+    // Obtain kanji grade:
+    grade = getGrade(line);
+    if (!grade) { return false; }
+
+    firstKanaIndex = line.search(/[\u3041-\u3096|\u30A1-\u30FA]/);
+    if (firstKanaIndex !== -1) {
+        readings = line.substr(firstKanaIndex);
+        nanoriMarkIndex = readings.search(/T\d|\{/);
+        if (nanoriMarkIndex !== -1) {
+            readings = readings.substring(0, nanoriMarkIndex);
         }
-        grade = getGrade(line);
-        if (!grade || options.grades.indexOf(grade) === -1) {
-            return false;
-        }
+        readings = readings.trim().split(/\s+/);
+    } else {
+        readings = [];
     }
 
     // Finally obtain the meanings:
@@ -93,9 +99,11 @@ function parseLine(line, options) {
         .split('} {');
 
     return {
-        kanji: line[0],
+        term: line[0],
+        dictionary: 'kanji',
         grade: grade,
-        meanings: meanings
+        meanings: meanings,
+        readings: readings
     };
 }
 
@@ -107,17 +115,17 @@ function parseLine(line, options) {
  * @param  [Function]  callback   Callback function.
  * @return {Undefined}
  */
-module.exports = function (sourceFile, destFile, options, callback) {
-    // An absence of the "options" argument is not critical,
-    // however the options should exist as an Object even if it's empty:
-    if (typeof options !== 'object') {
-        options = {};
-    }
+module.exports = function (settings, callback) {
 
     // An absence of the "callback" argument is not critical,
     // however the callback should exist as a Function even if it's a noop:
     if (typeof callback !== 'function') {
         callback = defaultCallback;
+    }
+
+    // An absence of the "settings" argument is critical:
+    if (typeof settings !== 'object') {
+        callback('Unable to convert. Invalid settings.');
     }
 
     /**
@@ -139,23 +147,19 @@ module.exports = function (sourceFile, destFile, options, callback) {
         // Dead simple split of file by end-of-line marker:
         res.split(eol).forEach(function (line) {
             // Every single line represents a single entry in the dictionary:
-            var entry = parseLine(line, options);
+            var entry = parseLine(line, settings.options);
             // Some lines might be comments or corrupted, so avoid those:
             if (entry) {
                 entries.push(entry);
             }
         });
 
-        // To speed things up we create a ready-to-use JavaScript file
-        // that will not require parsing JSON structure every time the
-        // extension code is triggered:
-        entries = 'var kanjilist = ' + JSON.stringify(entries) + ';';
-
         // Write the result to the destination file:
-        fs.writeFile(destFile, entries, 'utf8', callback);
+        fs.writeFile(settings.destinationFile, JSON.stringify(entries), 'utf8',
+            callback);
     }
 
     // Asynchronously read entire file into memory and perform conversion
     // of the contents:
-    fs.readFile(sourceFile, 'utf8', convert);
+    fs.readFile(settings.sourceFile, 'utf8', convert);
 };

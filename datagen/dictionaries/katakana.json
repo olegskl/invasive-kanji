@@ -1,0 +1,139 @@
+[
+    {"term": "ア", "dictionary": "katakana", "readings": ["a"]},
+    {"term": "イ", "dictionary": "katakana", "readings": ["i"]},
+    {"term": "ウ", "dictionary": "katakana", "readings": ["u"]},
+    {"term": "エ", "dictionary": "katakana", "readings": ["e"]},
+    {"term": "オ", "dictionary": "katakana", "readings": ["o"]},
+
+    {"term": "カ", "dictionary": "katakana", "readings": ["ka"]},
+    {"term": "キ", "dictionary": "katakana", "readings": ["ki"]},
+    {"term": "ク", "dictionary": "katakana", "readings": ["ku"]},
+    {"term": "ケ", "dictionary": "katakana", "readings": ["ke"]},
+    {"term": "コ", "dictionary": "katakana", "readings": ["ko"]},
+
+    {"term": "サ", "dictionary": "katakana", "readings": ["sa"]},
+    {"term": "シ", "dictionary": "katakana", "readings": ["shi", "si"]},
+    {"term": "ス", "dictionary": "katakana", "readings": ["su"]},
+    {"term": "セ", "dictionary": "katakana", "readings": ["se"]},
+    {"term": "ソ", "dictionary": "katakana", "readings": ["so"]},
+
+    {"term": "タ", "dictionary": "katakana", "readings": ["ta"]},
+    {"term": "チ", "dictionary": "katakana", "readings": ["chi"]},
+    {"term": "ツ", "dictionary": "katakana", "readings": ["tsu"]},
+    {"term": "テ", "dictionary": "katakana", "readings": ["te"]},
+    {"term": "ト", "dictionary": "katakana", "readings": ["to"]},
+
+    {"term": "ナ", "dictionary": "katakana", "readings": ["na"]},
+    {"term": "ニ", "dictionary": "katakana", "readings": ["ni"]},
+    {"term": "ヌ", "dictionary": "katakana", "readings": ["nu"]},
+    {"term": "ネ", "dictionary": "katakana", "readings": ["ne"]},
+    {"term": "ノ", "dictionary": "katakana", "readings": ["no"]},
+
+    {"term": "ハ", "dictionary": "katakana", "readings": ["ha"]},
+    {"term": "ヒ", "dictionary": "katakana", "readings": ["hi"]},
+    {"term": "フ", "dictionary": "katakana", "readings": ["fu", "hu"]},
+    {"term": "ヘ", "dictionary": "katakana", "readings": ["he"]},
+    {"term": "ホ", "dictionary": "katakana", "readings": ["ho"]},
+
+    {"term": "マ", "dictionary": "katakana", "readings": ["ma"]},
+    {"term": "ミ", "dictionary": "katakana", "readings": ["mi"]},
+    {"term": "ム", "dictionary": "katakana", "readings": ["mu"]},
+    {"term": "メ", "dictionary": "katakana", "readings": ["me"]},
+    {"term": "モ", "dictionary": "katakana", "readings": ["mo"]},
+
+    {"term": "ヤ", "dictionary": "katakana", "readings": ["ya"]},
+    {"term": "ユ", "dictionary": "katakana", "readings": ["yu"]},
+    {"term": "ヨ", "dictionary": "katakana", "readings": ["yo"]},
+
+    {"term": "ラ", "dictionary": "katakana", "readings": ["ra"]},
+    {"term": "リ", "dictionary": "katakana", "readings": ["ri"]},
+    {"term": "ル", "dictionary": "katakana", "readings": ["ru"]},
+    {"term": "レ", "dictionary": "katakana", "readings": ["re"]},
+    {"term": "ロ", "dictionary": "katakana", "readings": ["ro"]},
+
+    {"term": "ワ", "dictionary": "katakana", "readings": ["wa"]},
+    {"term": "ウィ", "dictionary": "katakana", "readings": ["wi"]},
+    {"term": "ウェ", "dictionary": "katakana", "readings": ["we"]},
+    {"term": "ヲ", "dictionary": "katakana", "readings": ["wo"]},
+    {"term": "ン", "dictionary": "katakana", "readings": ["n"]},
+
+
+
+    {"term": "キャ", "dictionary": "katakana", "readings": ["kya"]},
+    {"term": "キュ", "dictionary": "katakana", "readings": ["kyu"]},
+    {"term": "キョ", "dictionary": "katakana", "readings": ["kyo"]},
+
+    {"term": "シャ", "dictionary": "katakana", "readings": ["sha"]},
+    {"term": "シュ", "dictionary": "katakana", "readings": ["shu"]},
+    {"term": "ショ", "dictionary": "katakana", "readings": ["sho"]},
+
+    {"term": "チャ", "dictionary": "katakana", "readings": ["cha"]},
+    {"term": "チュ", "dictionary": "katakana", "readings": ["chu"]},
+    {"term": "チョ", "dictionary": "katakana", "readings": ["cho"]},
+
+    {"term": "ニャ", "dictionary": "katakana", "readings": ["nya"]},
+    {"term": "ニュ", "dictionary": "katakana", "readings": ["nyu"]},
+    {"term": "ニョ", "dictionary": "katakana", "readings": ["nyo"]},
+
+    {"term": "ヒャ", "dictionary": "katakana", "readings": ["hya"]},
+    {"term": "ヒュ", "dictionary": "katakana", "readings": ["hyu"]},
+    {"term": "ヒョ", "dictionary": "katakana", "readings": ["hyo"]},
+
+    {"term": "ミャ", "dictionary": "katakana", "readings": ["mya"]},
+    {"term": "ミュ", "dictionary": "katakana", "readings": ["myu"]},
+    {"term": "ミョ", "dictionary": "katakana", "readings": ["myo"]},
+
+    {"term": "リャ", "dictionary": "katakana", "readings": ["rya"]},
+    {"term": "リュ", "dictionary": "katakana", "readings": ["ryu"]},
+    {"term": "リョ", "dictionary": "katakana", "readings": ["ryo"]},
+
+
+
+    {"term": "ガ", "dictionary": "katakana", "readings": ["ga"]},
+    {"term": "ギ", "dictionary": "katakana", "readings": ["gi"]},
+    {"term": "グ", "dictionary": "katakana", "readings": ["gu"]},
+    {"term": "ゲ", "dictionary": "katakana", "readings": ["ge"]},
+    {"term": "ゴ", "dictionary": "katakana", "readings": ["go"]},
+
+    {"term": "ザ", "dictionary": "katakana", "readings": ["za"]},
+    {"term": "ジ", "dictionary": "katakana", "readings": ["ji"]},
+    {"term": "ズ", "dictionary": "katakana", "readings": ["zu"]},
+    {"term": "ゼ", "dictionary": "katakana", "readings": ["ze"]},
+    {"term": "ゾ", "dictionary": "katakana", "readings": ["zo"]},
+
+    {"term": "ダ", "dictionary": "katakana", "readings": ["da"]},
+    {"term": "ヂ", "dictionary": "katakana", "readings": ["ji"]},
+    {"term": "ヅ", "dictionary": "katakana", "readings": ["zu"]},
+    {"term": "デ", "dictionary": "katakana", "readings": ["de"]},
+    {"term": "ド", "dictionary": "katakana", "readings": ["do"]},
+
+    {"term": "バ", "dictionary": "katakana", "readings": ["ba"]},
+    {"term": "ビ", "dictionary": "katakana", "readings": ["bi"]},
+    {"term": "ブ", "dictionary": "katakana", "readings": ["bu"]},
+    {"term": "ベ", "dictionary": "katakana", "readings": ["be"]},
+    {"term": "ボ", "dictionary": "katakana", "readings": ["bo"]},
+
+    {"term": "パ", "dictionary": "katakana", "readings": ["pa"]},
+    {"term": "ピ", "dictionary": "katakana", "readings": ["pi"]},
+    {"term": "プ", "dictionary": "katakana", "readings": ["pu"]},
+    {"term": "ペ", "dictionary": "katakana", "readings": ["pe"]},
+    {"term": "ポ", "dictionary": "katakana", "readings": ["po"]},
+
+
+
+    {"term": "ギャ", "dictionary": "katakana", "readings": ["gya"]},
+    {"term": "ギュ", "dictionary": "katakana", "readings": ["gyu"]},
+    {"term": "ギョ", "dictionary": "katakana", "readings": ["gyo"]},
+
+    {"term": "ジャ", "dictionary": "katakana", "readings": ["ja"]},
+    {"term": "ジュ", "dictionary": "katakana", "readings": ["ju"]},
+    {"term": "ジョ", "dictionary": "katakana", "readings": ["jo"]},
+
+    {"term": "ビャ", "dictionary": "katakana", "readings": ["bya"]},
+    {"term": "ビュ", "dictionary": "katakana", "readings": ["byu"]},
+    {"term": "ビョ", "dictionary": "katakana", "readings": ["byo"]},
+
+    {"term": "ピャ", "dictionary": "katakana", "readings": ["pya"]},
+    {"term": "ピュ", "dictionary": "katakana", "readings": ["pyu"]},
+    {"term": "ピョ", "dictionary": "katakana", "readings": ["pyo"]}
+]
