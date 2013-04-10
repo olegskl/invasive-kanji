@@ -1,0 +1,19 @@
+html {
+    background: #fff;
+    font-family: arial;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    width: 600px;
+    margin: 15% auto;
+    padding: 0;
+}
+
+fieldset {
+    margin: 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 10px;
+}
