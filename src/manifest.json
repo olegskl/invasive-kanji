@@ -1,13 +1,14 @@
 {
     "name": "Invasive kanji",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "manifest_version": 2,
     "description": "An invasive way to learn kanji.",
     "permissions": ["tabs"],
     "options_page": "options.html",
     "background": {
         "scripts": ["background.js"]
-    }, "content_scripts": [{
+    },
+    "content_scripts": [{
         "matches": ["<all_urls>"],
         "exclude_matches": [
             "http://jisho.org/*",
@@ -18,9 +19,10 @@
             "http://translate.google.com/*",
             "https://*/*invasive-kanji*"
         ],
-        "css": ["contentstyle.css"],
         "js": ["contentscript.js"]
-    }], "web_accessible_resources": [
+    }],
+    "web_accessible_resources": [
+        "contentstyle.css",
         "framecontent.html",
         "framescript.html",
         "framestyle.css"
