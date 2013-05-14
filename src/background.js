@@ -51,7 +51,6 @@
      * @return {Undefined}
      */
     function saveUserPreferences(preferences, callback) {
-        console.log('Saving preferences', arguments);
         try {
             storage.setItem('userPreferences', JSON.stringify(preferences));
             userPreferences = preferences;
@@ -167,6 +166,13 @@
     }
 
     /* -------------------------------- MAIN -------------------------------- */
+
+    // Check whether new version is installed
+    chrome.runtime.onInstalled.addListener(function (details) {
+        if (details.reason === 'install'){
+            chrome.tabs.create({url: 'options.html'});
+        }
+    });
 
     // Establish the communication interface:
     chrome.extension.onMessage.addListener(messageHandler);
