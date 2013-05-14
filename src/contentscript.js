@@ -5,12 +5,15 @@
     'use strict';
 
     var frame = document.createElement('iframe'),
+        frameStyleElement = document.createElement('link'),
         frameSrc = extension.getURL('framecontent.html'),
+        frameStyleHref = chrome.extension.getURL('contentstyle.css'),
         documentVisibilityChangeEventName = 'visibilitychange',
         documentHiddenProperty = 'hidden',
         activeElement,
         extensionId = chrome.i18n.getMessage('@@extension_id'),
-        extensionBaseURL = 'chrome-extension://' + extensionId;
+        extensionBaseURL = 'chrome-extension://' + extensionId,
+        transitionEventName = 'webkitTransitionEnd';
 
     /**
      * Noop does nothing.
@@ -61,13 +64,17 @@
     }
 
     /**
-     * Removes the frame from the DOM.
+     * Removes the frame and its styling from the DOM.
      * @return {Undefined}
      */
     function removeFrame() {
-        if (frame && frame.parentNode) {
-            frame.parentNode.removeChild(frame);
+        if (frameStyleElement && frameStyleElement.remove) {
+            frameStyleElement.remove();
         }
+        if (frame && frame.remove) {
+            frame.remove();
+        }
+        frameStyleElement = null;
         frame = null;
     }
 
@@ -85,7 +92,7 @@
         if (currentOpacity === opacity || (opacity === 0 && !currentOpacity)) {
             callback({error: null});
         } else {
-            addEventHandlerCalledOnce(element, 'webkitTransitionEnd', callback);
+            addEventHandlerCalledOnce(element, transitionEventName, callback);
             setTimeout(function () {
                 element.style.opacity = opacity;
             }, 1);
@@ -99,16 +106,6 @@
     function proceedToPage() {
         restoreFocus();
         setOpacity(frame, 0, removeFrame);
-    }
-
-    /**
-     * Redirects the user to another page.
-     * @param  {String}    redirectionURL URL of the page.
-     * @return {Undefined}
-     */
-    function performRedirect(redirectionURL) {
-        // It is safe to redirect now:
-        window.location = redirectionURL;
     }
 
     /**
@@ -143,25 +140,9 @@
 
             setOpacity(frame, 1, callback);
 
-            setTimeout(function () {
-                document.getElementById('gbqfq').focus();
-            }, 2000);
-            // setTimeout(function () {
-            //     document.getElementById('gbqfq').focus();
-            // }, 1100);
-            // setTimeout(function () {
-            //     document.getElementById('gbqfq').focus();
-            // }, 1200);
-
         } else if (request.proceedToPage) {
 
             proceedToPage();
-
-        } else if (request.redirectTo) {
-
-            if (frame && frame.parentNode) {
-                performRedirect(request.redirectTo);
-            }
 
         } else if (request.storeFocus) {
 
@@ -183,6 +164,11 @@
 
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
+
+    // Inject the frame styles programmatically in order to avoid flickering:
+    frameStyleElement.href = frameStyleHref;
+    frameStyleElement.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(frameStyleElement);
 
     // Set up the listener first to ensure all messages are received:
     extension.onMessage.addListener(messageHandler);
