@@ -110,7 +110,7 @@ section a:hover {
 /* --------------------------------- OPTIONS -------------------------------- */
 
 fieldset {
-    margin: 20px 0;
+    margin: 26px 0 15px 0;
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 10px;
