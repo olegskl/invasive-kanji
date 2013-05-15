@@ -14,7 +14,15 @@
     }
 
     function displaySuccess(message) {
-        console.log(message);
+        var options = document.getElementById('options');
+        if (!options) {
+            console.log(message);
+            return;
+        }
+        options.style.removeProperty('-webkit-animation-name');
+        setTimeout(function () {
+            options.style.setProperty('-webkit-animation-name', 'confirmsave');
+        }, 1);
     }
 
     /**
@@ -138,6 +146,24 @@
 
     // Establish the communication interface:
     // extension.onMessage.addListener(messageHandler);
+
+    function route(hash) {
+        if (typeof hash !== 'string') {
+            hash = location.hash;
+        } else {
+            location.hash = hash;
+        }
+        if (hash === '#about') {
+            document.getElementById('section-about').classList.remove('offscreen');
+            document.getElementById('section-options').classList.add('offscreen');
+        } else {
+            document.getElementById('section-about').classList.add('offscreen');
+            document.getElementById('section-options').classList.remove('offscreen');
+        }
+    }
+
+    window.addEventListener('hashchange', route);
+    route(location.hash || '#options');
 
     // Begin by loading previously-saved user preferences:
     loadUserPreferences(function (response) {

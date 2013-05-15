@@ -1,19 +1,122 @@
 html {
     background: #fff;
-    font-family: arial;
+    font-family: arial, sans-serif;
     padding: 0;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    color: #333;
 }
 
 body {
+    position: relative;
     width: 600px;
     margin: 15% auto;
     padding: 0;
 }
+
+/* --------------------------------- HEADER --------------------------------- */
+
+header {
+    height: 60px;
+}
+
+nav {
+    float: right;
+    border-bottom: 1px solid #dadada;
+    height: 60px;
+}
+
+nav > a {
+    display: block;
+    float: left;
+    width: 100px;
+    height: 60px;
+    font-size: 26px;
+    line-height: 60px;
+    text-align: center;
+
+    overflow: hidden;
+
+    color: #666;
+
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+}
+
+nav > a:hover {
+    color: #333;
+}
+
+nav > a:target, nav > a:target:hover {
+    color: #333;
+    border-bottom-color: #ff5555;
+}
+
+h1 {
+    float: left;
+    padding: 0;
+    margin: 0;
+    line-height: 60px;
+    padding-left: 60px;
+    background: url('./images/InvasiveKanji_icon_48x48.png') left center no-repeat;
+}
+
+#options {
+    -webkit-animation-duration: 0.8s;
+}
+
+@-webkit-keyframes confirmsave {
+    0% { line-height: 60px; }
+    20% { line-height: 28px; }
+    80% { line-height: 28px; }
+    100% { line-height: 60px; }
+}
+
+/* -------------------------------- SECTIONS -------------------------------- */
+
+section {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    opacity: 1;
+    -webkit-transition: -webkit-transform 0.2s, opacity 0.2s ease-out 0s;
+    transition: transform 0.2s, opacity 0.2s ease-out 0s;
+}
+
+.offscreen {
+    opacity: 0;
+    -webkit-transform: translateX(150%);
+    transform: translateX(150%);
+}
+
+section p {
+    padding-top: 10px;
+    line-height: 1.6em;
+}
+
+section a {
+    color: #993333;
+    text-decoration: none;
+}
+
+section a:hover {
+    color: #ea3333;
+}
+
+/* --------------------------------- OPTIONS -------------------------------- */
 
 fieldset {
     margin: 20px 0;
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 10px;
+}
+
+input {
+    padding-left: 10px;
+}
+
+label {
+    padding-right: 10px;
 }

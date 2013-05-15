@@ -5,7 +5,16 @@
     <link rel="stylesheet" href="options.css" type="text/css" media="screen">
 </head>
 <body>
-    <h1>Invasive Kanji options</h1>
+
+    <header>
+        <h1>Invasive Kanji</h1>
+        <nav>
+            <a id="options" href="#options">options<br>saved</a>
+            <a id="about" href="#about">about</a>
+        </nav>
+    </header>
+
+    <section id="section-options">
 
     <input type="hidden" id="kanji" name="dictionaries[]" value="kanji">
 
@@ -53,6 +62,18 @@
         <input type="checkbox" id="katakana" name="dictionaries[]" value="katakana">
         <label for="katakana">Katakana</label>        
     </fieldset>
+
+    </section>
+
+    <section id="section-about" class="offscreen">
+        
+    <p>Thank you for choosing <i>Invasive Kanji</i> – a free and open-source project for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will <i>make</i> you study kanji and/or kana as you browse the Internet.</p>
+
+    <p><i>Invasive Kanji</i> tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.</p>
+
+    <p>There are many features planned ahead. If you have suggestions or problems using the extension, please <a href="https://github.com/olegskl/invasive-kanji/issues">submit a bug or a feature request</a>. If you are a developer, you are very welcome to <a href="https://github.com/olegskl/invasive-kanji">fork this project on github</a>.</p>
+
+    </section>
 
     <script src="options.js"></script>
 </body>
