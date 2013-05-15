@@ -5,7 +5,24 @@
 var fs = require('fs'), // filesystem
     util = require('util'), // utilities
     eol = /\r?\n/, // end-of-line marker regex
-    kana = /[\u3041-\u3096|\u30A1-\u30FA]/;
+    kana = /[\u3041-\u3096|\u30A1-\u30FA]/,
+    userFriendlyMeanings = {
+        '\u4E00': ['1'],
+        '\u4E8C': ['2'],
+        '\u4E09': ['3'],
+        '\u56DB': ['4'],
+        '\u4E94': ['5'],
+        '\u516D': ['6'],
+        '\u4E03': ['7'],
+        '\u516B': ['8'],
+        '\u4E5D': ['9'],
+        '\u5341': ['10'],
+        '\u767E': ['100'],
+        '\u5343': ['1000', '1 000', '1.000', '1,000'],
+        '\u4E07': ['10000', '10 000', '10.000', '10,000'],
+        '\u5104': ['100000000', '100 000 000', '100.000.000', '100,000,000'],
+        '\u534A': ['1/2', '0.5', '0,5']
+    };
 
 /**
  * Default callback.
@@ -102,7 +119,7 @@ function parseLine(line, options) {
         term: line[0],
         dictionary: 'kanji',
         grade: grade,
-        meanings: meanings,
+        meanings: meanings.concat(userFriendlyMeanings[line[0]] || []),
         readings: readings
     };
 }
