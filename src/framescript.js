@@ -471,7 +471,8 @@
         // If background script fails to deliver a valid dictionary entry, then
         // we abort the operation by issuing a request to proceed to page:
         if (!response || response.error) {
-            console.log('Failed to request a dictionary entry. ' + response.error);
+            console.log('Failed to request a dictionary entry. ' +
+                response.error);
             proceedToPage();
             return;
         }
