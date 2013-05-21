@@ -375,6 +375,21 @@
     }
 
     /**
+     * An event handler for advancing to the next question on enter key press.
+     * @param  {Object} e Event object.
+     * @return {Undefined}
+     */
+    function nextQuestionOnEnterKey(e) {
+        if (e.which !== 13) { return; }
+        // No need for event listener anymore:
+        wrapper.removeEventListener('keypress', nextQuestionOnEnterKey);
+        setTimeout(function () {
+            infoElement.style.opacity = 0;
+        }, 1);
+        nextQuestion();
+    }
+
+    /**
      * A function to call when the user submits an incorrect answer.
      * @return {Undefined}
      */
@@ -396,6 +411,7 @@
         correctAnswerElement.innerHTML = (currentQuestion.meanings)
             ? currentQuestion.meanings.join(', ')
             : currentQuestion.readings.join(', ');
+
         setTimeout(function () {
             infoElement.style.opacity = 1;
         }, 1);
@@ -414,13 +430,8 @@
             }
             // Add the received dictionary entry as the new question:
             addQuestion(response.entry, function (response) {
-                // On any key pressed - advance to the next question:
-                addEventHandlerCalledOnce(wrapper, 'keypress', function () {
-                    setTimeout(function () {
-                        infoElement.style.opacity = 0;
-                    }, 1);
-                    nextQuestion();
-                });
+                // On <enter> key pressed - advance to the next question:
+                wrapper.addEventListener('keypress', nextQuestionOnEnterKey);
             });
         });
     }
