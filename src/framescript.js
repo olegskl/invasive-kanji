@@ -177,18 +177,28 @@
     }
 
     /**
-     * Validates a given answer for correctness.
-     * 
-     * The provided answer may span multiple categories IN THE FUTURE;
-     * e.g. the user has provided a list of readings and meanings in his/her
-     * answer to a given question.
-     * 
+     * Lowercases a string (for usage in Array.prototype.map).
+     * @param  {String} str A string value to lowercase.
+     * @return {String}     The lowercased input string.
+     */
+    function lowerCase(str) {
+        return str.toLowerCase();
+    }
+
+    /**
+     * Validates a given set of answers for correctness.
      * @param  {Array}   userAnswers Answers provided by user.
-     * @return {Boolean}             TRUE when all answer sets are correct.
+     * @return {Boolean}             TRUE if the entire answer set is correct.
      */
     function isCorrectAnswer(userAnswers) {
-        var correctAnswers = currentQuestion.meanings ||
-                currentQuestion.readings;
+        // Correct answers may be meanings or readings depending on the
+        // dictionary in use. Instead of hard-coding the dictionary names in
+        // this function, use duck-typing and give priority to meanings. Also
+        // note that the resulting set of answers must be lowercased:
+        var correctAnswers = (currentQuestion.meanings ||
+                currentQuestion.readings).map(lowerCase);
+
+        // Every item in the answer set provided by user must be correct:
         return userAnswers.every(function (userAnswer) {
             return (correctAnswers.indexOf(userAnswer) !== -1);
         });
