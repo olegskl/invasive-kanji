@@ -4,7 +4,7 @@
 
 The extension tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.
 
-There are many features planned ahead. If you have suggestions or problems using the extension, please [submit a bug or a feature request](https://github.com/olegskl/invasive-kanji/issues/). If you are a developer, you are very welcome to [contribute by forking this project here on github](https://github.com/olegskl/invasive-kanji/).
+There are many features planned ahead. If you have suggestions or problems using the extension, please [submit a bug or a feature request](https://github.com/olegskl/invasive-kanji/issues/). If you are a developer, you are very welcome to [contribute by forking this project here on github](https://github.com/olegskl/invasive-kanji/fork).
 
 ### Installation
 
@@ -27,6 +27,6 @@ You can access the extension options by clicking the "options" link on the botto
 
 ### License
 
-Creative Commons Attribution-ShareAlike Licence (V3.0). The Licence Deed can be viewed [here](http://creativecommons.org/licenses/by-sa/3.0/), and the full Licence Code is [here](http://creativecommons.org/licenses/by-sa/3.0/legalcode).
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" align="absmiddle"></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
 
-This package uses the KANJIDIC dictionary file. This file is the property of the [Electronic Dictionary Research and Development Group](http://www.edrdg.org/), and is used in conformance with the Group's [licence](http://www.edrdg.org/edrdg/licence.html).
+This package uses the KANJIDIC dictionary file. This file is the property of the [Electronic Dictionary Research and Development Group](http://www.edrdg.org/), and is used in conformance with the Group's [license](http://www.edrdg.org/edrdg/licence.html).
