@@ -1,0 +1,5 @@
+{
+    "remoteFile": "http://ftp.monash.edu.au/pub/nihongo/kanjidic.gz",
+    "sourceFile": "./dictionaries/kanjidic",
+    "destinationFile": "./dictionaries/kanjidic.json"
+}

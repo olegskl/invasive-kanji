@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Invasive Kanji options</title>
+    <link rel="stylesheet" href="options.css" type="text/css" media="screen">
+</head>
+<body>
+
+    <header>
+        <h1>Invasive Kanji</h1>
+        <nav>
+            <a id="options" href="#options">options<br>saved</a>
+            <a id="about" href="#about">about</a>
+        </nav>
+    </header>
+
+    <section id="section-options">
+
+    <input type="hidden" id="kanji" name="dictionaries[]" value="kanji">
+
+    <fieldset id="primary-school-grades">
+        <legend>Kanji taught in Japanese primary schools (1006)</legend>
+
+        <input type="checkbox" id="grade-1" name="grades[]" value="1">
+        <label for="grade-1">Year 1</label>
+
+        <input type="checkbox" id="grade-2" name="grades[]" value="2">
+        <label for="grade-2">Year 2</label>
+
+        <input type="checkbox" id="grade-3" name="grades[]" value="3">
+        <label for="grade-3">Year 3</label>
+
+        <input type="checkbox" id="grade-4" name="grades[]" value="4">
+        <label for="grade-4">Year 4</label>
+
+        <input type="checkbox" id="grade-5" name="grades[]" value="5">
+        <label for="grade-5">Year 5</label>
+
+        <input type="checkbox" id="grade-6" name="grades[]" value="6">
+        <label for="grade-6">Year 6</label>
+    </fieldset>
+
+    <fieldset id="secondary-school-grades">
+        <legend>Kanji taught in Japanese secondary schools (1130)</legend>
+
+        <input type="checkbox" id="grade-7" name="grades[]" value="7">
+        <label for="grade-7">Year 7</label>
+
+        <input type="checkbox" id="grade-8" name="grades[]" value="8">
+        <label for="grade-8">Year 8</label>
+
+        <input type="checkbox" id="grade-9" name="grades[]" value="9">
+        <label for="grade-9">Year 9</label>        
+    </fieldset>
+
+    <fieldset id="kana">
+        <legend>Kana (syllabic scripts)</legend>
+
+        <input type="checkbox" id="hiragana" name="dictionaries[]" value="hiragana">
+        <label for="hiragana">Hiragana</label>
+
+        <input type="checkbox" id="katakana" name="dictionaries[]" value="katakana">
+        <label for="katakana">Katakana</label>        
+    </fieldset>
+
+    </section>
+
+    <section id="section-about" class="offscreen">
+        
+    <p>Thank you for choosing <i>Invasive Kanji</i> &ndash; a free and open-source project for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will <i>make</i> you study kanji and/or kana as you browse the Internet.</p>
+
+    <p><i>Invasive Kanji</i> tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.</p>
+
+    <p>There are many features planned ahead. If you have suggestions or problems using the extension, please <a href="https://github.com/olegskl/invasive-kanji/issues">submit a bug or a feature request</a>. If you are a developer, you are very welcome to <a href="https://github.com/olegskl/invasive-kanji">fork this project on github</a>.</p>
+
+    </section>
+
+    <script src="options.js"></script>
+</body>
+</html>

@@ -1,8 +1,18 @@
 {
     "name": "Invasive kanji",
-    "version": "0.2.6",
+    "version": "0.5.0",
     "manifest_version": 2,
     "description": "An invasive way to learn kanji.",
+    "icons": {
+        "19": "images/InvasiveKanji_icon_19x19.png",
+        "48": "images/InvasiveKanji_icon_48x48.png",
+        "128": "images/InvasiveKanji_icon_128x128.png"
+    },
+    "permissions": ["tabs"],
+    "options_page": "options.html",
+    "background": {
+        "scripts": ["background.js"]
+    },
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "exclude_matches": [
@@ -14,10 +24,13 @@
             "http://translate.google.com/*",
             "https://*/*invasive-kanji*"
         ],
-        "js": [
-            "kanjilist.js",
-            "contentscript.js"
-        ],
-        "css" : ["contentstyle.css"]
-    }]
+        "js": ["contentscript.js"]
+    }],
+    "web_accessible_resources": [
+        "images/InvasiveKanji_icon_48x48.png",
+        "contentstyle.css",
+        "framecontent.html",
+        "framescript.html",
+        "framestyle.css"
+    ]
 }

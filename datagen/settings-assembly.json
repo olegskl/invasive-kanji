@@ -1,0 +1,17 @@
+{
+    "destinationFilePath": "../src/dictionary.json",
+    "sources": [
+        {
+            "dictionaryName": "hiragana",
+            "filePath": "./dictionaries/hiragana.json"
+        },
+        {
+            "dictionaryName": "katakana",
+            "filePath": "./dictionaries/katakana.json"
+        },
+        {
+            "dictionaryName": "kanji",
+            "filePath": "./dictionaries/kanjidic.json"
+        }
+    ]
+}

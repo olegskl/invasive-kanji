@@ -1,0 +1,143 @@
+[
+    {"term": "あ", "dictionary": "hiragana", "readings": ["a"]},
+    {"term": "い", "dictionary": "hiragana", "readings": ["i"]},
+    {"term": "う", "dictionary": "hiragana", "readings": ["u"]},
+    {"term": "え", "dictionary": "hiragana", "readings": ["e"]},
+    {"term": "お", "dictionary": "hiragana", "readings": ["o"]},
+
+    {"term": "か", "dictionary": "hiragana", "readings": ["ka"]},
+    {"term": "き", "dictionary": "hiragana", "readings": ["ki"]},
+    {"term": "く", "dictionary": "hiragana", "readings": ["ku"]},
+    {"term": "け", "dictionary": "hiragana", "readings": ["ke"]},
+    {"term": "こ", "dictionary": "hiragana", "readings": ["ko"]},
+
+    {"term": "さ", "dictionary": "hiragana", "readings": ["sa"]},
+    {"term": "し", "dictionary": "hiragana", "readings": ["shi", "si"]},
+    {"term": "す", "dictionary": "hiragana", "readings": ["su"]},
+    {"term": "せ", "dictionary": "hiragana", "readings": ["se"]},
+    {"term": "そ", "dictionary": "hiragana", "readings": ["so"]},
+
+    {"term": "た", "dictionary": "hiragana", "readings": ["ta"]},
+    {"term": "ち", "dictionary": "hiragana", "readings": ["chi"]},
+    {"term": "つ", "dictionary": "hiragana", "readings": ["tsu"]},
+    {"term": "て", "dictionary": "hiragana", "readings": ["te"]},
+    {"term": "と", "dictionary": "hiragana", "readings": ["to"]},
+
+    {"term": "な", "dictionary": "hiragana", "readings": ["na"]},
+    {"term": "に", "dictionary": "hiragana", "readings": ["ni"]},
+    {"term": "ぬ", "dictionary": "hiragana", "readings": ["nu"]},
+    {"term": "ね", "dictionary": "hiragana", "readings": ["ne"]},
+    {"term": "の", "dictionary": "hiragana", "readings": ["no"]},
+
+    {"term": "は", "dictionary": "hiragana", "readings": ["ha"]},
+    {"term": "ひ", "dictionary": "hiragana", "readings": ["hi"]},
+    {"term": "ふ", "dictionary": "hiragana", "readings": ["fu", "hu"]},
+    {"term": "へ", "dictionary": "hiragana", "readings": ["he"]},
+    {"term": "ほ", "dictionary": "hiragana", "readings": ["ho"]},
+
+    {"term": "ま", "dictionary": "hiragana", "readings": ["ma"]},
+    {"term": "み", "dictionary": "hiragana", "readings": ["mi"]},
+    {"term": "む", "dictionary": "hiragana", "readings": ["mu"]},
+    {"term": "め", "dictionary": "hiragana", "readings": ["me"]},
+    {"term": "も", "dictionary": "hiragana", "readings": ["mo"]},
+
+    {"term": "や", "dictionary": "hiragana", "readings": ["ya"]},
+    {"term": "ゆ", "dictionary": "hiragana", "readings": ["yu"]},
+    {"term": "よ", "dictionary": "hiragana", "readings": ["yo"]},
+
+    {"term": "ら", "dictionary": "hiragana", "readings": ["ra"]},
+    {"term": "り", "dictionary": "hiragana", "readings": ["ri"]},
+    {"term": "る", "dictionary": "hiragana", "readings": ["ru"]},
+    {"term": "れ", "dictionary": "hiragana", "readings": ["re"]},
+    {"term": "ろ", "dictionary": "hiragana", "readings": ["ro"]},
+
+    {"term": "わ", "dictionary": "hiragana", "readings": ["wa"]},
+    {"term": "ゐ", "dictionary": "hiragana", "readings": ["wi"]},
+    {"term": "ゑ", "dictionary": "hiragana", "readings": ["we"]},
+    {"term": "を", "dictionary": "hiragana", "readings": ["wo"]},
+    {"term": "ん", "dictionary": "hiragana", "readings": ["n"]},
+
+
+
+    {"term": "きゃ", "dictionary": "hiragana", "readings": ["kya"]},
+    {"term": "きゅ", "dictionary": "hiragana", "readings": ["kyu"]},
+    {"term": "きょ", "dictionary": "hiragana", "readings": ["kyo"]},
+
+    {"term": "しゃ", "dictionary": "hiragana", "readings": ["sha"]},
+    {"term": "しゅ", "dictionary": "hiragana", "readings": ["shu"]},
+    {"term": "しょ", "dictionary": "hiragana", "readings": ["sho"]},
+
+    {"term": "ちゃ", "dictionary": "hiragana", "readings": ["cha"]},
+    {"term": "ちゅ", "dictionary": "hiragana", "readings": ["chu"]},
+    {"term": "ちょ", "dictionary": "hiragana", "readings": ["cho"]},
+
+    {"term": "にゃ", "dictionary": "hiragana", "readings": ["nya"]},
+    {"term": "にゅ", "dictionary": "hiragana", "readings": ["nyu"]},
+    {"term": "にょ", "dictionary": "hiragana", "readings": ["nyo"]},
+
+    {"term": "ひゃ", "dictionary": "hiragana", "readings": ["hya"]},
+    {"term": "ひゅ", "dictionary": "hiragana", "readings": ["hyu"]},
+    {"term": "ひょ", "dictionary": "hiragana", "readings": ["hyo"]},
+
+    {"term": "みゃ", "dictionary": "hiragana", "readings": ["mya"]},
+    {"term": "みゅ", "dictionary": "hiragana", "readings": ["myu"]},
+    {"term": "みょ", "dictionary": "hiragana", "readings": ["myo"]},
+
+    {"term": "りゃ", "dictionary": "hiragana", "readings": ["rya"]},
+    {"term": "りゅ", "dictionary": "hiragana", "readings": ["ryu"]},
+    {"term": "りょ", "dictionary": "hiragana", "readings": ["ryo"]},
+
+
+
+    {"term": "が", "dictionary": "hiragana", "readings": ["ga"]},
+    {"term": "ぎ", "dictionary": "hiragana", "readings": ["gi"]},
+    {"term": "ぐ", "dictionary": "hiragana", "readings": ["gu"]},
+    {"term": "げ", "dictionary": "hiragana", "readings": ["ge"]},
+    {"term": "ご", "dictionary": "hiragana", "readings": ["go"]},
+
+    {"term": "ざ", "dictionary": "hiragana", "readings": ["za"]},
+    {"term": "じ", "dictionary": "hiragana", "readings": ["ji"]},
+    {"term": "ず", "dictionary": "hiragana", "readings": ["zu"]},
+    {"term": "ぜ", "dictionary": "hiragana", "readings": ["ze"]},
+    {"term": "ぞ", "dictionary": "hiragana", "readings": ["zo"]},
+
+    {"term": "だ", "dictionary": "hiragana", "readings": ["da"]},
+    {"term": "ぢ", "dictionary": "hiragana", "readings": ["ji"]},
+    {"term": "づ", "dictionary": "hiragana", "readings": ["zu"]},
+    {"term": "で", "dictionary": "hiragana", "readings": ["de"]},
+    {"term": "ど", "dictionary": "hiragana", "readings": ["do"]},
+
+    {"term": "ば", "dictionary": "hiragana", "readings": ["ba"]},
+    {"term": "び", "dictionary": "hiragana", "readings": ["bi"]},
+    {"term": "ぶ", "dictionary": "hiragana", "readings": ["bu"]},
+    {"term": "べ", "dictionary": "hiragana", "readings": ["be"]},
+    {"term": "ぼ", "dictionary": "hiragana", "readings": ["bo"]},
+
+    {"term": "ぱ", "dictionary": "hiragana", "readings": ["pa"]},
+    {"term": "ぴ", "dictionary": "hiragana", "readings": ["pi"]},
+    {"term": "ぷ", "dictionary": "hiragana", "readings": ["pu"]},
+    {"term": "ぺ", "dictionary": "hiragana", "readings": ["pe"]},
+    {"term": "ぽ", "dictionary": "hiragana", "readings": ["po"]},
+
+
+
+    {"term": "ぎゃ", "dictionary": "hiragana", "readings": ["gya"]},
+    {"term": "ぎゅ", "dictionary": "hiragana", "readings": ["gyu"]},
+    {"term": "ぎょ", "dictionary": "hiragana", "readings": ["gyo"]},
+
+    {"term": "じゃ", "dictionary": "hiragana", "readings": ["ja"]},
+    {"term": "じゅ", "dictionary": "hiragana", "readings": ["ju"]},
+    {"term": "じょ", "dictionary": "hiragana", "readings": ["jo"]},
+
+    {"term": "ぢゃ", "dictionary": "hiragana", "readings": ["ja"]},
+    {"term": "ぢゅ", "dictionary": "hiragana", "readings": ["ju"]},
+    {"term": "ぢょ", "dictionary": "hiragana", "readings": ["jo"]},
+
+    {"term": "びゃ", "dictionary": "hiragana", "readings": ["bya"]},
+    {"term": "びゅ", "dictionary": "hiragana", "readings": ["byu"]},
+    {"term": "びょ", "dictionary": "hiragana", "readings": ["byo"]},
+
+    {"term": "ぴゃ", "dictionary": "hiragana", "readings": ["pya"]},
+    {"term": "ぴゅ", "dictionary": "hiragana", "readings": ["pyu"]},
+    {"term": "ぴょ", "dictionary": "hiragana", "readings": ["pyo"]}
+]
