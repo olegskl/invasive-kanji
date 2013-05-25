@@ -114,11 +114,7 @@
                 callback(response);
             } else {
                 dictionary = response.json.filter(dictionaryFilter);
-                callback({
-                    error: null/*,
-                    dictionary: dictionary,
-                    preferences: preferences*/
-                });
+                callback({error: null});
             }
         });
     }
@@ -137,23 +133,48 @@
         // On question request get random dictionary entry and apply it to
         // the callback provided by the caller:
         if (request.entry) {
+
             // Return a random dictionary entry by default:
             getRandomDictionaryEntry(callback);
+
         } else if (request.updateUserPreferences) {
 
+            // Attempt to save the new preferences:
             saveUserPreferences(request.updateUserPreferences, function (res) {
+                // Just a shortcut:
                 var preferences = request.updateUserPreferences;
+
+                function notifyTabs(tabs) {
+                    tabs.forEach(function (tab) {
+                        // Don't notify twice the initial sender:
+                        if (tab.id === sender.tab.id) { return; }
+                        chrome.tabs.sendMessage(tab.id, {
+                            userPreferencesUpdated: preferences
+                        });
+                    });
+                }
+
                 if (res.error) {
-                    callback({
+                    return callback({
                         error: 'Failed to save user preferences. ' + res.error
                     });
-                } else {
-                    loadDictionary(dictionarySource, preferences, callback);
                 }
+
+                // Preferences are saved without problems, so we need to reload
+                // the dictionary with the these preferences:
+                loadDictionary(dictionarySource, preferences, function (res) {
+                    // Notify the initial sender:
+                    callback(res);
+                    // Notify all currently open "option" tabs:
+                    chrome.tabs.query({
+                        url: chrome.extension.getURL('options.html')
+                    }, notifyTabs);
+                });
+
             });
 
         } else if (request.userPreferences) {
-            // Call back with current user preferences:
+            // Callback with current user preferences:
             callback({preferences: userPreferences});
         } else {
             // Forward the request to the content script:
@@ -169,8 +190,8 @@
 
     // Check whether new version is installed
     chrome.runtime.onInstalled.addListener(function (details) {
-        if (details.reason === 'install'){
-            chrome.tabs.create({url: 'options.html'});
+        if (details.reason === 'install') {
+            chrome.tabs.create({url: 'options.html#options'});
         }
     });
 
