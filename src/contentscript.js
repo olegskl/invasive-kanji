@@ -6,7 +6,6 @@
 
     var frame = document.createElement('iframe'),
         frameStyleElement = document.createElement('link'),
-        frameSrc = extension.getURL('framecontent.html'),
         frameStyleHref = chrome.extension.getURL('contentstyle.css'),
         documentVisibilityChangeEventName = 'visibilitychange',
         documentHiddenProperty = 'hidden',
@@ -176,6 +175,8 @@
     // Configure the frame:
     frame.id = 'extension-invasive-kanji-coversheet';
     frame.src = extension.getURL('framecontent.html');
+    // Explicitly set border width to avoid flashing of the iframe:
+    frame.style.borderWidth = 0;
 
     // Vendor prefixes for document visibility api:
     if (document.hidden === undefined) {
