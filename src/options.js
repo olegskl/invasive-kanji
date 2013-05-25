@@ -4,10 +4,10 @@
 (function (window, document, extension) {
     'use strict';
 
-    var slice = Array.prototype.slice,
-        isArray = Array.isArray,
-        selector = 'input',
-        inputElements = slice.call(document.querySelectorAll(selector));
+    var isArray = Array.isArray,
+        slice = Array.prototype.slice,
+        sectionsElement = document.getElementById('sections'),
+        inputElements = slice.call(document.querySelectorAll('input'));
 
     function displayError(error) {
         console.log(error);
@@ -61,7 +61,7 @@
                     preferences[prefKey] = [];
                 }
                 // Only keep set values of checkboxes:
-                if (typeof input.value !== 'undefined' &&
+                if (input.value !== undefined &&
                         !(input.type === 'checkbox' && !input.checked)) {
                     preferences[prefKey].push(input.value);
                 }
@@ -90,7 +90,7 @@
             }/* else {
                 // todo...
             }*/
-        } else if (typeof optionValue !== 'undefined') {
+        } else if (optionValue !== undefined) {
             if (input.type === 'checkbox') {
                 input.checked = true;
             } else {
@@ -117,9 +117,42 @@
             var optionKey = (inputElement.name.substr(-2, 2) === '[]')
                     ? inputElement.name.substr(0, inputElement.name.length - 2)
                     : inputElement.name,
-                optionValue = (preferences) ? preferences[optionKey] : undefined;
+                optionValue = preferences ? preferences[optionKey] : undefined;
             hookInputElement(inputElement, optionValue);
         });
+    }
+
+    function route(hash) {
+
+        var targetSection;
+
+        if (typeof hash !== 'string') {
+            hash = location.hash;
+        } else {
+            location.hash = hash;
+        }
+
+        // Remove the hash sign:
+        targetSection = document.getElementById('section-' + hash.substr(1));
+
+        if (!targetSection) {
+            displayError('Navigation error. Section "' + targetSection + '"' +
+                'doesn\'t exist');
+            return;
+        }
+
+        sectionsElement.style.webkitTransform = 'translateX(-' +
+                targetSection.offsetLeft + 'px)';
+    }
+
+    function noTransitionRoute(hash) {
+        var duration = window.getComputedStyle(sectionsElement)
+                .webkitTransitionDuration;
+        sectionsElement.style.webkitTransitionDuration = '0s';
+        route(hash);
+        setTimeout(function () {
+            sectionsElement.style.webkitTransitionDuration = duration;
+        }, 1);
     }
 
     /**
@@ -129,41 +162,28 @@
      * @param  {Function} callback Callback to be executed.
      * @return {Boolean}           Always returns true because Chrome wants so.
      */
-    // function messageHandler(request, sender, callback) {
+    function messageHandler(request, sender, callback) {
 
-    //     // If for some reason the background page decides to update the user
-    //     // preferences it will trigger a "userPreferencesUpdated" event. By
-    //     // listening to this event we ensure synchronization between the user
-    //     // preferences data and its representation on the options page:
-    //     if (request.userPreferencesUpdated) {
-    //         updateUserPreferencesForm(request.userPreferencesUpdated);
-    //     }
+        // If for some reason the background page decides to update the user
+        // preferences it will trigger a "userPreferencesUpdated" event. By
+        // listening to this event we ensure synchronization between the user
+        // preferences data and its representation on the options page:
+        if (request.userPreferencesUpdated) {
+            updateUserPreferencesForm(request.userPreferencesUpdated);
+        }
 
-    //     return true;
-    // }
+        return true;
+    }
 
     /* -------------------------------- MAIN -------------------------------- */
 
     // Establish the communication interface:
-    // extension.onMessage.addListener(messageHandler);
+    extension.onMessage.addListener(messageHandler);
 
-    function route(hash) {
-        if (typeof hash !== 'string') {
-            hash = location.hash;
-        } else {
-            location.hash = hash;
-        }
-        if (hash === '#about') {
-            document.getElementById('section-about').classList.remove('offscreen');
-            document.getElementById('section-options').classList.add('offscreen');
-        } else {
-            document.getElementById('section-about').classList.add('offscreen');
-            document.getElementById('section-options').classList.remove('offscreen');
-        }
-    }
+    // The first routing must be performed without CSS transition:
+    noTransitionRoute(location.hash || '#options');
 
     window.addEventListener('hashchange', route);
-    route(location.hash || '#options');
 
     // Begin by loading previously-saved user preferences:
     loadUserPreferences(function (response) {

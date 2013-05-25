@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <title>Invasive Kanji options</title>
-    <link rel="stylesheet" href="options.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="options.css" type="text/css">
 </head>
 <body>
 
-    <header>
-        <h1>Invasive Kanji</h1>
-        <nav>
-            <a id="options" href="#options">options<br>saved</a>
-            <a id="about" href="#about">about</a>
-        </nav>
-    </header>
+<div id="container">
 
-    <section id="section-options">
+<header>
+    <h1>Invasive Kanji</h1>
+    <nav>
+        <a id="options" href="#options" class="nav-item">options<br>saved</a>
+        <a id="about" href="#about" class="nav-item">about</a>
+    </nav>
+</header>
+
+<div id="sections">
+
+<section id="section-options">
 
     <input type="hidden" id="kanji" name="dictionaries[]" value="kanji">
 
@@ -63,18 +67,23 @@
         <label for="katakana">Katakana</label>        
     </fieldset>
 
-    </section>
+</section>
 
-    <section id="section-about" class="offscreen">
-        
+<section id="section-about">
+    
     <p>Thank you for choosing <i>Invasive Kanji</i> &ndash; a free and open-source project for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will <i>make</i> you study kanji and/or kana as you browse the Internet.</p>
 
     <p><i>Invasive Kanji</i> tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.</p>
 
     <p>There are many features planned ahead. If you have suggestions or problems using the extension, please <a href="https://github.com/olegskl/invasive-kanji/issues">submit a bug or a feature request</a>. If you are a developer, you are very welcome to <a href="https://github.com/olegskl/invasive-kanji">fork this project on github</a>.</p>
 
-    </section>
+</section>
 
-    <script src="options.js"></script>
+</div>
+
+</div>
+
+<script src="options.js"></script>
+
 </body>
 </html>
