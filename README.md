@@ -1,4 +1,4 @@
-# <img src="/src/images/InvasiveKanji_icon_48x48.png" align="absmiddle"> Invasive Kanji
+# <img src="/src/images/icon_48.png" align="absmiddle"> Invasive Kanji
 
 "Invasive Kanji" is a free and open-source Google Chrome extension for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will *make* you study kanji and/or kana as you browse the Internet.
 
