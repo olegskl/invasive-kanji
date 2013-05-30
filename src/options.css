@@ -73,6 +73,7 @@ nav {
 .nav-item:target, .nav-item:target:hover {
     color: #333;
     border-bottom-color: #ff5555;
+    outline: none;
 }
 
 #options {
