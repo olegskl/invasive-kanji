@@ -24,7 +24,7 @@
     var wrapper = document.body,
         questions = [], // list of questions to be asked
         currentQuestion,
-        infoElement = document.getElementById('informational'),
+        infoElement = document.getElementById('info'),
         answerSeparator = /\s*\,\s*/,
         isArray = Array.isArray,
         maxTheftCountAllowed = 3,
