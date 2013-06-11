@@ -84,14 +84,15 @@ function assemble(settings, callback) {
             }
 
             // Check if all sources have been processed:
-            if (!pending) {
-                if (errors.length > 0) {
-                    callback(errors);
-                } else {
-                    // Write the result to the destination file:
-                    fs.writeFile(settings.destinationFilePath,
-                        JSON.stringify(assembly), 'utf8', callback);
-                }
+            if (pending) { return; }
+
+            // At this point all sources have been processed:
+            if (errors.length > 0) {
+                callback(errors);
+            } else {
+                // Write the result to the destination file:
+                fs.writeFile(settings.destinationFilePath,
+                    JSON.stringify(assembly), 'utf8', callback);
             }
         });
     });
@@ -99,12 +100,11 @@ function assemble(settings, callback) {
 
 function performConversion(settings) {
     convert(settings, function (err) {
-
         // Do not proceed in case of an error:
         if (err) { return done(err); }
 
         fs.readFile(assemblySettingsFile, function (err, res) {
-
+            // Do not proceed in case of an error:
             if (err) { return done(err); }
 
             // Attempt to assemble all available dictionaries
