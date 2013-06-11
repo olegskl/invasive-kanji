@@ -25,8 +25,8 @@
         questions = [], // list of questions to be asked
         currentQuestion,
         infoElement = document.getElementById('info'),
+        timerElement = document.getElementById('timer'),
         answerSeparator = /\s*\,\s*/,
-        isArray = Array.isArray,
         maxTheftCountAllowed = 3,
         focusTheftCount = 0,
         timer,
@@ -79,6 +79,8 @@
         clearTimeout(timer);
         // Clear the timer reference:
         timer = null;
+        // Reset the timer indicator to its original state (see relevant css):
+        timerElement.classList.remove('timedOut');
     }
 
     /**
@@ -115,8 +117,8 @@
         extension.sendMessage({makeFrameVisible: true}, callback);
     }
 
-    // The stupid stealFocus function should be broken down in two...
-    // One for blur event listener, the other - for manual invocation.
+    // The stupid stealFocus function should probably be broken down in two,
+    // one for the blur event listener, the other - for manual invocation.
 
     /**
      * Steals focus from another element and assigns it to the answer element.
@@ -204,6 +206,10 @@
         });
     }
 
+    /**
+     * (Re)sets the question timer.
+     * @return {Undefined}
+     */
     function setTimer() {
         // Always clear the timer before setting it to avoid multiple timers
         // working in parallel:
@@ -212,6 +218,8 @@
         // failed to answer the question; thus we invoke wrong answer handler
         // on timer completion:
         timer = setTimeout(handleIncorrectAnswer, timerDuration);
+        // Initialize the timer indicator transition (see relevant css):
+        timerElement.classList.add('timedOut');
     }
 
     /**
@@ -404,8 +412,7 @@
      * @return {Undefined}
      */
     function handleIncorrectAnswer() {
-        var questionElement = currentQuestion.nodes.questionElement,
-            answerElement = currentQuestion.nodes.answerElement,
+        var answerElement = currentQuestion.nodes.answerElement,
             correctAnswerElement = currentQuestion.nodes.correctAnswerElement;
 
         clearTimer();

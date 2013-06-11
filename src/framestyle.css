@@ -101,6 +101,33 @@ input.answer {
     text-shadow: 1px 1px 1px rgba(20,20,20,0.1);
 }
 
+/* ----------------------------- TIMER INDICATOR ---------------------------- */
+
+#timer {
+    position: absolute;
+    top: 64.5%;
+    left: 40%;
+    width: 20%;
+    height: 1px;
+    background-color: #dadada;
+    opacity: 0;
+}
+
+.timedOut {
+    opacity: 1 !important;
+    left: 50% !important;
+    width: 0% !important;
+    
+    -webkit-transition:
+        left 10s linear 0s,
+        width 10s linear 0s,
+        opacity 5s ease-in 0s;
+    transition:
+        left 10s linear 0s,
+        width 10s linear 0s,
+        opacity 5s ease-in 0s;
+}
+
 /* ----------------------------- INFORMATIONAL ------------------------------ */
 
 #info {
