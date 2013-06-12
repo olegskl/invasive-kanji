@@ -8,10 +8,10 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Download the [latest beta](https://github.com/olegskl/invasive-kanji/archive/master.zip) (recommended) or the [development version](https://github.com/olegskl/invasive-kanji/archive/develop.zip) of the repository.
+1. Download the [latest beta](https://github.com/olegskl/invasive-kanji/blob/master/extension.zip?raw=true) (recommended) or the [development version](https://github.com/olegskl/invasive-kanji/blob/develop/extension.zip?raw=true) of the repository.
 2. Unarchive the downloaded file to your preferred location (whichever suits you).
-3. Using Google Chrome browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
-4. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the **extension/** directory within the unarchived repository directory and confirm.
+3. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
+4. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory and confirm.
 
 If you have completed the above steps, the "options" page will open indicating successfull installation of the extension. Start browsing the Internet and learning Japanese at the same time.
 
