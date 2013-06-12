@@ -4,9 +4,9 @@
     "manifest_version": 2,
     "description": "An invasive way to learn kanji.",
     "icons": {
-        "19": "images/InvasiveKanji_icon_19x19.png",
-        "48": "images/InvasiveKanji_icon_48x48.png",
-        "128": "images/InvasiveKanji_icon_128x128.png"
+        "19": "images/icon_19.png",
+        "48": "images/icon_48.png",
+        "128": "images/icon_128.png"
     },
     "permissions": ["tabs"],
     "options_page": "options.html",
@@ -27,7 +27,7 @@
         "js": ["contentscript.js"]
     }],
     "web_accessible_resources": [
-        "images/InvasiveKanji_icon_48x48.png",
+        "images/icon_48.png",
         "contentstyle.css",
         "framecontent.html",
         "framescript.html",

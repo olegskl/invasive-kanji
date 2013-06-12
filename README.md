@@ -1,4 +1,4 @@
-# <img src="/src/images/InvasiveKanji_icon_48x48.png" align="absmiddle"> Invasive Kanji
+# <img src="/src/images/icon_48.png" align="absmiddle"> Invasive Kanji
 
 "Invasive Kanji" is a free and open-source Google Chrome extension for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will *make* you study kanji and/or kana as you browse the Internet.
 
@@ -8,7 +8,7 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Click on the <kbd>ZIP</kbd> button just to the left of the repository URL field above to download the repository.
+1. Download the [latest beta](https://github.com/olegskl/invasive-kanji/archive/master.zip) (recommended) or the [development version](https://github.com/olegskl/invasive-kanji/archive/develop.zip) of the repository.
 2. Unarchive the downloaded file to your preferred location (whichever suits you).
 3. Using Google Chrome browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
 4. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the **src/** directory within the unarchived repository directory and confirm.
@@ -24,6 +24,15 @@ If you fail to provide a correct answer in time, a valid answer will be displaye
 If you feel tired, or need to be really productive in the next couple of hours, you can temporarily disable the application by navigating to chrome://extensions/ and unchecking the "Enabled" checkbox next to "Invasive Kanji".
 
 You can access the extension options by clicking the "options" link on the bottom of the question interface or in your installed extensions list.
+
+### Changelog of v0.6 beta
+
+- Both "options" and "about" page now open in a new tab by default;
+- When multiple "options" pages are open at the same time, modifications in one of them are now immediately reflected in others;
+- Fixed iframe rectangle flickering just before the main interface is rendered;
+- Fixed unexpected section transition on the "about" page;
+- Realigned the elements of the main interface;
+- Added a progress indicator of the question timer to the main interface.
 
 ### License
 
