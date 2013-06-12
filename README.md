@@ -6,6 +6,10 @@ The extension tries to be as invasive as possible, but without ill side effects.
 
 There are many features planned ahead. If you have suggestions or problems using the extension, please [submit a bug or a feature request](https://github.com/olegskl/invasive-kanji/issues/). If you are a developer, you are very welcome to [contribute by forking this project here on github](https://github.com/olegskl/invasive-kanji/fork).
 
+### Screenshots
+
+<img src="/screenshots/interface_main.png"><img src="/screenshots/interface_options.png">
+
 ### Installation
 
 1. Download the [latest beta](https://github.com/olegskl/invasive-kanji/blob/master/extension.zip?raw=true) (recommended) or the [development version](https://github.com/olegskl/invasive-kanji/blob/develop/extension.zip?raw=true) of the repository.
