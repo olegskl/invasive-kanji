@@ -1,5 +1,5 @@
 {
-    "destinationFilePath": "../src/dictionary.json",
+    "destinationFilePath": "../extension/dictionary.json",
     "sources": [
         {
             "dictionaryName": "hiragana",
