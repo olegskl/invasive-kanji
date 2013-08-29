@@ -106,6 +106,10 @@
                     preferences.grades.indexOf(entry.grade) === -1) {
                 return false;
             }
+            if (entry.chapter !== undefined && isArray(preferences.chapters) &&
+                    preferences.chapters.indexOf(entry.chapter) === -1) {
+                return false;
+            }
             return true;
         }
 
