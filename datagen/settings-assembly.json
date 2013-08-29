@@ -12,6 +12,10 @@
         {
             "dictionaryName": "kanji",
             "filePath": "./dictionaries/kanjidic.json"
+        },
+        {
+            "dictionaryName": "mnn",
+            "filePath": "./dictionaries/minna-no-nihongo-ch1.json"
         }
     ]
 }
