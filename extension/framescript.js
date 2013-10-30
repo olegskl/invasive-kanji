@@ -165,9 +165,9 @@
      * @return {Array|Null}        An array of answer parts or null if error.
      */
     function parseAnswer(answer) {
-        return (typeof answer === 'string')
-            ? answer.trim().toLowerCase().split(answerSeparator)
-            : null;
+        return (typeof answer === 'string') ?
+            answer.trim().toLowerCase().split(answerSeparator) :
+            null;
     }
 
     /**
@@ -339,9 +339,9 @@
         }
 
         // Temporary workaround to avoid asking for a hiragana/katakana meaning:
-        answerElement.placeholder = (question.meanings)
-            ? 'type the meaning...'
-            : 'type the reading...';
+        answerElement.placeholder = (question.meanings) ?
+            'type the meaning...' :
+            'type the reading...';
 
         // Render the question term inside of the question's DOM element:
         questionElement.innerHTML = question.term;
@@ -425,9 +425,9 @@
         // questionElement.classList.add('incorrect');
 
         // Display correct answer:
-        correctAnswerElement.innerHTML = (currentQuestion.meanings)
-            ? currentQuestion.meanings.join(', ')
-            : currentQuestion.readings.join(', ');
+        correctAnswerElement.innerHTML = (currentQuestion.meanings) ?
+            currentQuestion.meanings.join(', ') :
+            currentQuestion.readings.join(', ');
 
         setTimeout(function () {
             infoElement.style.opacity = 1;
@@ -446,7 +446,7 @@
                 return;
             }
             // Add the received dictionary entry as the new question:
-            addQuestion(response.entry, function (response) {
+            addQuestion(response.entry, function () {
                 // On <enter> key pressed - advance to the next question:
                 wrapper.addEventListener('keypress', nextQuestionOnEnterKey);
             });
