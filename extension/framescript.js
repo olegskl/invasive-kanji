@@ -100,12 +100,12 @@
 
     /**
      * Asynchronously requests a dictionary entry and invokes a callback.
-     * @param  {Function} callback Callback with a response argument.
+     * @param  {Function}  callback Callback with a response argument.
      * @return {Undefined}
      */
     function requestRandomDictionaryEntry(callback) {
         // Request a random dictionary entry from the background script:
-        extension.sendMessage({entry: true}, callback);
+        extension.sendMessage('randomDictionaryEntryRequest', callback);
     }
 
     /**
@@ -114,7 +114,7 @@
      * @return {Undefined}
      */
     function requestFrameVisibility(callback) {
-        extension.sendMessage({makeFrameVisible: true}, callback);
+        extension.sendMessage('frameVisibilityRequest', callback);
     }
 
     // The stupid stealFocus function should probably be broken down in two,
