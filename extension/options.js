@@ -125,8 +125,8 @@
         // Obtain a reference to the section where we want to route:
         var targetSection = document.getElementById('section-' +
                 hash.substr(1));
-
         if (targetSection) {
+            location.hash = hash;
             sectionsElement.style.webkitTransform = 'translateX(-' +
                     targetSection.offsetLeft + 'px)';
         }
@@ -138,7 +138,7 @@
      * @return {Undefined}
      */
     function routeWithoutTransitionTo(hash) {
-        // We need to keep
+        // We need to keep the duration property as it is defined in the CSS:
         var duration = window.getComputedStyle(sectionsElement)
                 .webkitTransitionDuration;
         // Temporarily set the transition duration to zero to avoid transition:
@@ -147,7 +147,7 @@
         routeTo(hash);
         // Trigger reflow:
         if (sectionsElement.offsetWidth) {
-            // Restore the transition duration:
+            // Restore the original transition duration:
             sectionsElement.style.webkitTransitionDuration = duration;
         }
     }
