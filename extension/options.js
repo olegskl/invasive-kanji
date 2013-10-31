@@ -1,53 +1,36 @@
-/*jslint browser: true, devel: true */
+/*jslint browser: true */
 /*globals chrome */
 
-(function (window, document, extension) {
+(function (window, document, runtime, storage) {
     'use strict';
 
     var isArray = Array.isArray,
         slice = Array.prototype.slice,
         sectionsElement = document.getElementById('sections'),
-        inputElements = slice.call(document.querySelectorAll('input'));
-
-    function displayError(error) {
-        console.log(error);
-    }
-
-    function displaySuccess(message) {
-        var options = document.getElementById('options');
-        if (!options) {
-            console.log(message);
-            return;
-        }
-        options.style.removeProperty('-webkit-animation-name');
-        setTimeout(function () {
-            options.style.setProperty('-webkit-animation-name', 'confirmsave');
-        }, 1);
-    }
+        inputElements = slice.call(document.querySelectorAll('input')),
+        optionsNavElement = document.getElementById('options'),
+        animationNameProperty = '-webkit-animation-name';
 
     /**
-     * Obtains current user preferences from the background page.
-     * @param  {Function} callback Callback with user preferences object.
+     * Confirms user preferences save by triggering a fancy animation.
      * @return {Undefined}
      */
-    function loadUserPreferences(callback) {
-        extension.sendMessage({userPreferences: true}, callback);
-    }
-
-    /**
-     * Callback confirming user preferences saved.
-     * @param  {Object|String} error       Error message.
-     * @param  {[type]} preferences [description]
-     * @return {[type]}             [description]
-     */
-    function confirmUserPreferencesSave(response) {
-        if (response.error) {
-            displayError(response.error);
-        } else {
-            displaySuccess('Preferences saved.');
+    function confirmUserPreferencesSave() {
+        if (!optionsNavElement) { return; }
+        // Reset the animation name to be able to run it again:
+        optionsNavElement.style.removeProperty(animationNameProperty);
+        // Trigger reflow:
+        if (optionsNavElement.offsetWidth) {
+            // Reassign the animation name so that it runs:
+            optionsNavElement.style
+                .setProperty(animationNameProperty, 'confirmsave');
         }
     }
 
+    /**
+     * Derives an assembly of user preferences from the state of input elements.
+     * @return {Object} The user preferences object.
+     */
     function assembleUserPreferences() {
         var preferences = {};
 
@@ -76,14 +59,25 @@
         return preferences;
     }
 
+    /**
+     * Persists user preferences with the available storage mechanism.
+     * @return {Undefined}
+     */
     function saveUserPreferences() {
-        extension.sendMessage({
-            updateUserPreferences: assembleUserPreferences()
+        storage.sync.set({
+            userPreferences: assembleUserPreferences()
         }, confirmUserPreferencesSave);
     }
 
+    /**
+     * Sets an input element's state according to the relevant value in user
+     * preferences and keeps track of user interactions with the element.
+     * @param  {NodeElement} input       An input element.
+     * @param  {*}           optionValue User preference value.
+     * @return {Undefined}
+     */
     function hookInputElement(input, optionValue) {
-
+        // Set the element's value:
         if (isArray(optionValue)) {
             if (input.type === 'checkbox') {
                 input.checked = (optionValue.indexOf(input.value) !== -1);
@@ -101,9 +95,7 @@
                 input.value = optionValue || input.value || '';
             }
         }
-
-        // Avoid duplicate event listeners:
-        input.removeEventListener('change', saveUserPreferences);
+        // Keep track of any modifications:
         input.addEventListener('change', saveUserPreferences);
     }
 
@@ -114,84 +106,101 @@
      */
     function updateUserPreferencesForm(preferences) {
         inputElements.forEach(function (inputElement) {
-            var optionKey = (inputElement.name.substr(-2, 2) === '[]')
-                    ? inputElement.name.substr(0, inputElement.name.length - 2)
-                    : inputElement.name,
-                optionValue = preferences ? preferences[optionKey] : undefined;
+            var optionKey = (inputElement.name.substr(-2, 2) === '[]') ?
+                    inputElement.name.substr(0, inputElement.name.length - 2) :
+                    inputElement.name,
+                optionValue = preferences ?
+                    preferences[optionKey] :
+                    undefined;
             hookInputElement(inputElement, optionValue);
         });
     }
 
-    function route(hash) {
+    /**
+     * Performs the routing operation to the section represented by URL hash.
+     * @param  {String}    hash A URL hash representing routing destination.
+     * @return {Undefined}
+     */
+    function routeTo(hash) {
+        // Obtain a reference to the section where we want to route:
+        var targetSection = document.getElementById('section-' +
+                hash.substr(1));
 
-        var targetSection;
-
-        if (typeof hash !== 'string') {
-            hash = location.hash;
-        } else {
-            location.hash = hash;
+        if (targetSection) {
+            sectionsElement.style.webkitTransform = 'translateX(-' +
+                    targetSection.offsetLeft + 'px)';
         }
-
-        // Remove the hash sign:
-        targetSection = document.getElementById('section-' + hash.substr(1));
-
-        if (!targetSection) {
-            displayError('Navigation error. Section "' + targetSection + '"' +
-                'doesn\'t exist');
-            return;
-        }
-
-        sectionsElement.style.webkitTransform = 'translateX(-' +
-                targetSection.offsetLeft + 'px)';
-    }
-
-    function noTransitionRoute(hash) {
-        var duration = window.getComputedStyle(sectionsElement)
-                .webkitTransitionDuration;
-        sectionsElement.style.webkitTransitionDuration = '0s';
-        route(hash);
-        setTimeout(function () {
-            sectionsElement.style.webkitTransitionDuration = duration;
-        }, 1);
     }
 
     /**
-     * Handles messages arriving from background page.
-     * @param  {Object}   request  Request object.
-     * @param  {Object}   sender   Sender object.
-     * @param  {Function} callback Callback to be executed.
-     * @return {Boolean}           Always returns true because Chrome wants so.
+     * Performs the routing operation without any transition.
+     * @param  {String}    hash A URL hash representing routing destination.
+     * @return {Undefined}
      */
-    function messageHandler(request, sender, callback) {
-
-        // If for some reason the background page decides to update the user
-        // preferences it will trigger a "userPreferencesUpdated" event. By
-        // listening to this event we ensure synchronization between the user
-        // preferences data and its representation on the options page:
-        if (request.userPreferencesUpdated) {
-            updateUserPreferencesForm(request.userPreferencesUpdated);
+    function routeWithoutTransitionTo(hash) {
+        // We need to keep
+        var duration = window.getComputedStyle(sectionsElement)
+                .webkitTransitionDuration;
+        // Temporarily set the transition duration to zero to avoid transition:
+        sectionsElement.style.webkitTransitionDuration = '0s';
+        // Perform the actual routing:
+        routeTo(hash);
+        // Trigger reflow:
+        if (sectionsElement.offsetWidth) {
+            // Restore the transition duration:
+            sectionsElement.style.webkitTransitionDuration = duration;
         }
+    }
 
-        return true;
+    /**
+     * Handles location hash change event by performing a route operation.
+     * @return {Undefined}
+     */
+    function locationHashChangeHandler() {
+        // In case when route is called on hashChange event, the hash argument
+        // will not be available, so we refer to the current one in the URL:
+        routeTo(location.hash);
+    }
+
+    /**
+     * Handles user preferences change event by updating the HTML form.
+     * @param  {Object}    changes A key-value map of changed items.
+     * @return {Undefined}
+     */
+    function userPreferencesChangeEventHandler(changes) {
+        if (changes.userPreferences) {
+            updateUserPreferencesForm(changes.userPreferences.newValue);
+        }
+    }
+
+    /**
+     * Handles storage sync event by updating the HTML form.
+     * @param  {Object}    storageContainer Storage container with the
+     *                                      userPreferences property.
+     * @return {Undefined}
+     */
+    function userPreferencesLoadEventHandler(storageContainer) {
+        // Chrome insists on returning a storage container in storage.sync.get 
+        // API, so we need to obtain the desired property from it:
+        var preferences = storageContainer.userPreferences;
+        // On failure do NOT touch the form:
+        if (preferences && typeof preferences === 'object') {
+            updateUserPreferencesForm(preferences);
+        }
     }
 
     /* -------------------------------- MAIN -------------------------------- */
 
-    // Establish the communication interface:
-    extension.onMessage.addListener(messageHandler);
-
     // The first routing must be performed without CSS transition:
-    noTransitionRoute(location.hash || '#options');
+    routeWithoutTransitionTo(location.hash || '#options');
 
-    window.addEventListener('hashchange', route);
+    // Establish a URL hash change event listener:
+    window.addEventListener('hashchange', locationHashChangeHandler);
+
+    // Establish a user preferences change event listener:
+    storage.onChanged.addListener(userPreferencesChangeEventHandler);
 
     // Begin by loading previously-saved user preferences:
-    loadUserPreferences(function (response) {
-        if (response.error) {
-            displayError(response.error);
-        } else {
-            updateUserPreferencesForm(response.preferences);
-        }
-    });
+    storage.sync.get('userPreferences', userPreferencesLoadEventHandler);
 
-}(window, document, chrome.extension));
+}(window, document, chrome.runtime, chrome.storage));
