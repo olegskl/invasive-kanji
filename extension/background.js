@@ -1,63 +1,49 @@
-/*jslint browser: true, devel: true */
+/*jslint browser: true */
 /*globals chrome */
 
-(function (window, chrome) {
+(function (runtime, storage, tabs) {
     'use strict';
 
     var dictionarySource = 'dictionary.json',
         dictionary,
         userPreferences = {},
-        storage = window.localStorage,
-        round = Math.round,
-        random = Math.random,
         isArray = Array.isArray;
 
     /**
-     * Obtains a random entry from the dictionary.
-     * @param [Function]   callback A function called with error and entry object.
+     * Obtains a random index of a given array.
+     * @param  {Array}  array An array of items.
+     * @return {Number}       A randomly picked index of the given array.
+     */
+    function randomIndexOf(array) {
+        return Math.round(Math.random() * (array.length - 1));
+    }
+
+    /**
+     * Obtains a random entry from a given dictionary.
+     * @param [Array]      dictionary A dictionary to pick an entry from.
+     * @param [Function]   callback   Called with error or entry property.
      * @return {Undefined}
      */
-    function getRandomDictionaryEntry(callback) {
+    function getRandomDictionaryEntry(dictionary, callback) {
         // Validate the dictionary:
         if (!isArray(dictionary)) {
             callback({error: 'Bad dictionary.'});
         } else if (!dictionary.length) {
             callback({error: 'Empty dictionary.'});
         } else {
-            callback({
-                entry: dictionary[round(random() * (dictionary.length - 1))]
-            });
+            callback({entry: dictionary[randomIndexOf(dictionary)]});
         }
     }
-
+    
     /**
-     * Loads previously-saved user preferences.
-     * @param  {Function}  callback ...
-     * @return {Undefined}
-     */
-    function loadUserPreferences(callback) {
-        try {
-            callback({
-                preferences: JSON.parse(storage.getItem('userPreferences'))
-            });
-        } catch (error) {
-            callback({error: 'Failed to load user preferences. ' + error});
-        }
-    }
-
-    /**
-     * Saves user preferences.
-     * @param  {Function}  callback ...
+     * @param  {Object}    preferences User preferences to save.
+     * @param  {Function}  callback    Called on task completion.
      * @return {Undefined}
      */
     function saveUserPreferences(preferences, callback) {
-        try {
-            storage.setItem('userPreferences', JSON.stringify(preferences));
-            userPreferences = preferences;
-            callback({preferences: preferences});
-        } catch (error) {
-            callback({error: 'Failed to save user preferences. ' + error});
-        }
+        storage.sync.set({userPreferences: preferences}, function () {
+            callback({error: runtime.lastError});
+        });
     }
 
     function getJSON(address, callback) {
@@ -132,53 +118,22 @@
 
         // On question request get random dictionary entry and apply it to
         // the callback provided by the caller:
-        if (request.entry) {
+        if (request === 'randomDictionaryEntryRequest') {
 
             // Return a random dictionary entry by default:
-            getRandomDictionaryEntry(callback);
+            getRandomDictionaryEntry(dictionary, callback);
 
         } else if (request.updateUserPreferences) {
 
             // Attempt to save the new preferences:
-            saveUserPreferences(request.updateUserPreferences, function (res) {
-                // Just a shortcut:
-                var preferences = request.updateUserPreferences;
-
-                function notifyTabs(tabs) {
-                    tabs.forEach(function (tab) {
-                        // Don't notify twice the initial sender:
-                        if (tab.id === sender.tab.id) { return; }
-                        chrome.tabs.sendMessage(tab.id, {
-                            userPreferencesUpdated: preferences
-                        });
-                    });
-                }
-
-                if (res.error) {
-                    return callback({
-                        error: 'Failed to save user preferences. ' + res.error
-                    });
-                }
-
-                // Preferences are saved without problems, so we need to reload
-                // the dictionary with the these preferences:
-                loadDictionary(dictionarySource, preferences, function (res) {
-                    // Notify the initial sender:
-                    callback(res);
-                    // Notify all currently open "option" tabs:
-                    chrome.tabs.query({
-                        url: chrome.extension.getURL('options.html')
-                    }, notifyTabs);
-                });
-
-            });
+            saveUserPreferences(request.updateUserPreferences, callback);
 
         } else if (request.userPreferences) {
             // Callback with current user preferences:
             callback({preferences: userPreferences});
         } else {
             // Forward the request to the content script:
-            chrome.tabs.sendMessage(sender.tab.id, request, callback);
+            tabs.sendMessage(sender.tab.id, request, callback);
         }
 
         // Chrome wants us to always return TRUE here so that callbacks can be
@@ -186,27 +141,67 @@
         return true;
     }
 
+    /**
+     * Handles chrome runtime onInstalled event by opening the options page.
+     * @see http://developer.chrome.com/extensions/runtime.html#event-onInstalled
+     * @param  {Object}    details Container for onInstalled event properties.
+     * @return {Undefined}
+     */
+    function onInstalledEventHandler(details) {
+        // Check for event dispatch reason;
+        // can be one of "install", "update", or "chrome_update":
+        if (details && details.reason === 'install') {
+            tabs.create({url: 'options.html#options'});
+        }
+    }
+
+    /**
+     * Handles storage sync event by storing the user preferences locally and
+     * loading the dictionary based on those preferences.
+     * @param  {Object}    storageContainer Storage container with the
+     *                                      userPreferences property.
+     * @return {Undefined}
+     */
+    function userPreferencesLoadEventHandler(storageContainer) {
+        // Chrome insists on returning a storage container in storage.sync.get 
+        // API, so we need to obtain the desired property from it:
+        var preferences = storageContainer.userPreferences;
+        // On failure do NOT touch the dictionary or the preferences reference:
+        if (preferences && typeof preferences === 'object') {
+            // Keep the preferences object locally for faster access:
+            userPreferences = preferences;
+            // Load the dictionary asynchronously:
+            loadDictionary(dictionarySource, preferences);
+        }
+    }
+
+    /**
+     * Handles user preferences change event by updating a local copy.
+     * @param  {Object}    changes A key-value map of changed items.
+     * @return {Undefined}
+     */
+    function userPreferencesChangeEventHandler(changes) {
+        if (!changes.userPreferences) {
+            return;
+        }
+        // Update the local copy of user preferences:
+        userPreferences = changes.userPreferences.newValue;
+        // Load the dictionary asynchronously:
+        loadDictionary(dictionarySource, userPreferences);
+    }
+
     /* -------------------------------- MAIN -------------------------------- */
 
-    // Check whether new version is installed
-    chrome.runtime.onInstalled.addListener(function (details) {
-        if (details.reason === 'install') {
-            chrome.tabs.create({url: 'options.html#options'});
-        }
-    });
+    // Check whether new version is installed:
+    runtime.onInstalled.addListener(onInstalledEventHandler);
 
     // Establish the communication interface:
-    chrome.extension.onMessage.addListener(messageHandler);
+    runtime.onMessage.addListener(messageHandler);
+
+    // Establish a user preferences change event listener:
+    storage.onChanged.addListener(userPreferencesChangeEventHandler);
 
     // Begin by obtaining the previously-saved user preferences:
-    loadUserPreferences(function (response) {
-        // On failure do NOT touch the dictionary or the preferences reference:
-        if (!response.error) {
-            // Keep a user preferences reference for faster access:
-            userPreferences = response.preferences;
-            // Load the dictionary asynchronously:
-            loadDictionary(dictionarySource, response.preferences);
-        }
-    });
+    storage.sync.get('userPreferences', userPreferencesLoadEventHandler);
 
-}(window, chrome));
+}(chrome.runtime, chrome.storage, chrome.tabs));
