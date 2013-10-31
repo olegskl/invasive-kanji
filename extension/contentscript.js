@@ -1,22 +1,21 @@
 /*jslint browser: true */
 /*globals chrome */
 
-(function (document, extension) {
+(function (document, runtime) {
     'use strict';
 
     var frame = document.createElement('iframe'),
         frameStyleElement = document.createElement('link'),
-        frameStyleHref = chrome.extension.getURL('contentstyle.css'),
+        frameStyleHref = runtime.getURL('contentstyle.css'),
         documentVisibilityChangeEventName = 'visibilitychange',
         documentHiddenProperty = 'hidden',
         activeElement,
-        extensionId = chrome.i18n.getMessage('@@extension_id'),
-        extensionBaseURL = 'chrome-extension://' + extensionId,
+        extensionBaseURL = 'chrome-extension://' + runtime.id,
         transitionEventName = 'webkitTransitionEnd';
 
     /**
-     * Noop does nothing.
-     * @return {Undefined} Returns nothing.
+     * The default noop function.
+     * @return {Undefined}
      */
     function noop() {}
 
@@ -135,7 +134,7 @@
             callback = noop;
         }
 
-        if (request.makeFrameVisible) {
+        if (request === 'frameVisibilityRequest') {
 
             setOpacity(frame, 1, callback);
 
@@ -167,14 +166,14 @@
     // Inject the frame styles programmatically in order to avoid flickering:
     frameStyleElement.href = frameStyleHref;
     frameStyleElement.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(frameStyleElement);
+    document.querySelector('head').appendChild(frameStyleElement);
 
     // Set up the listener first to ensure all messages are received:
-    extension.onMessage.addListener(messageHandler);
+    runtime.onMessage.addListener(messageHandler);
 
     // Configure the frame:
     frame.id = 'extension-invasive-kanji-coversheet';
-    frame.src = extension.getURL('framecontent.html');
+    frame.src = runtime.getURL('framecontent.html');
     // Explicitly set border width to avoid flashing of the iframe:
     frame.style.borderWidth = 0;
 
@@ -193,4 +192,4 @@
         document.body.appendChild(frame);
     }
 
-}(document, chrome.extension));
+}(document, chrome.runtime));
