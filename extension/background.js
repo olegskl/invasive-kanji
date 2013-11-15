@@ -15,7 +15,7 @@
      * @return {Number}       A randomly picked index of the given array.
      */
     function randomIndexOf(array) {
-        return Math.round(Math.random() * (array.length - 1));
+        return Math.floor(Math.random() * array.length);
     }
 
     /**
