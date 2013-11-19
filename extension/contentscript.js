@@ -113,11 +113,31 @@
     function documentVisibilityChangeHandler() {
         // Don't do anything if the document is hidden:
         if (document[documentHiddenProperty]) { return; }
-        // No need to ask again on the next document visibility change:
-        document.removeEventListener(documentVisibilityChangeEventName,
-                documentVisibilityChangeHandler);
-        // It is now safe to ask the question:
-        document.body.appendChild(frame);
+
+        // Document may change visibility multiple times:
+        if (!frame.parentNode) {
+            // It is now safe to ask the question:
+            document.body.appendChild(frame);
+        }
+
+        // ------------------------------ <HACK> -------------------------------
+        // A hack to keep in touch with the background page and ensure it is not
+        // in a disabled state, in which case a cleanup is required. At this
+        // moment the Chrome Extension API does not provide a more robust
+        // workaround (mind that this hack fails for already open pages...);
+        // see: https://code.google.com/p/chromium/issues/detail?id=19383
+        try {
+            // Background doesn't need to reply here:
+            runtime.sendMessage('ping');
+        } catch (e) {
+            // Clean up the no longer necessary event listener:
+            document.removeEventListener(documentVisibilityChangeEventName,
+                    documentVisibilityChangeHandler);
+            // Cannot use proceedToPage function here because it will try to
+            // send the restoreFocus request which will fail with an error:
+            removeFrame();
+        }
+        // ----------------------------- </HACK> -------------------------------
     }
 
     /**
@@ -160,6 +180,8 @@
         return true;
     }
 
+    /* -------------------------------- MAIN -------------------------------- */
+
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
 
@@ -185,10 +207,9 @@
 
     // We should wait for the document to become visible before asking the
     // question, otherwise the user won't be able to timely answer it:
-    if (document[documentHiddenProperty]) {
-        document.addEventListener(documentVisibilityChangeEventName,
-                documentVisibilityChangeHandler);
-    } else {
+    document.addEventListener(documentVisibilityChangeEventName,
+        documentVisibilityChangeHandler);
+    if (!document[documentHiddenProperty]) {
         document.body.appendChild(frame);
     }
 
