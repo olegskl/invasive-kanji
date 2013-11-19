@@ -60,6 +60,7 @@ nav {
 
     text-decoration: none;
     border-bottom: 3px solid transparent;
+    outline: none;
 }
 
 .nav-item:last-child {
@@ -73,7 +74,6 @@ nav {
 .nav-item:target, .nav-item:target:hover {
     color: #333;
     border-bottom-color: #ff5555;
-    outline: none;
 }
 
 #options {
