@@ -8,10 +8,9 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/downloads/0.6.3/invasive-kanji-extension.zip)**.
-2. Unarchive the downloaded file to your preferred location (whichever suits you).
-3. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
-4. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory of the downloaded release and confirm.
+1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/downloads/0.6.3/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
+2. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
+3. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory of the downloaded release and confirm.
 
 If you have completed the above steps, the "options" page will open indicating successfull installation of the extension. Start browsing the Internet and learning Japanese at the same time.
 
@@ -25,14 +24,13 @@ If you feel tired, or need to be really productive in the next couple of hours, 
 
 You can access the extension options by clicking the "options" link on the bottom of the question interface or in your installed extensions list.
 
-### Changelog of v0.6 beta
+### Changelog of v0.6.3 (beta)
 
-- Both "options" and "about" page now open in a new tab by default;
-- When multiple "options" pages are open at the same time, modifications in one of them are now immediately reflected in others;
-- Fixed iframe rectangle flickering just before the main interface is rendered;
-- Fixed unexpected section transition on the "about" page;
-- Realigned the elements of the main interface;
-- Added a progress indicator of the question timer to the main interface.
+- Extension options now automatically sync to any Chrome browser that the user is logged into, provided the user has sync enabled.
+- Improves random question selection mechanism.
+- Fixes failure to open options from a question page (issue #8).
+- Fixes (tentatively) failure to clean up questions when extension is disabled or uninstalled.
+- Fixes (tentatively) lost focus on the answer field in certain cases.
 
 ### License
 
