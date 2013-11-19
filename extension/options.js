@@ -1,15 +1,14 @@
 /*jslint browser: true */
 /*globals chrome */
 
-(function (window, document, runtime, storage) {
+(function (window, document, storage) {
     'use strict';
 
     var isArray = Array.isArray,
         slice = Array.prototype.slice,
-        sectionsElement = document.getElementById('sections'),
         inputElements = slice.call(document.querySelectorAll('input')),
-        optionsNavElement = document.getElementById('options'),
-        animationNameProperty = '-webkit-animation-name';
+        sectionsElement = document.getElementById('sections'),
+        optionsNavElement = document.getElementById('options');
 
     /**
      * Confirms user preferences save by triggering a fancy animation.
@@ -18,13 +17,42 @@
     function confirmUserPreferencesSave() {
         if (!optionsNavElement) { return; }
         // Reset the animation name to be able to run it again:
-        optionsNavElement.style.removeProperty(animationNameProperty);
-        // Trigger reflow:
+        optionsNavElement.style.removeProperty('-webkit-animation-name');
+        // Trigger reflow for animation to take effect:
         if (optionsNavElement.offsetWidth) {
             // Reassign the animation name so that it runs:
             optionsNavElement.style
-                .setProperty(animationNameProperty, 'confirmsave');
+                .setProperty('-webkit-animation-name', 'confirmsave');
         }
+    }
+
+    /**
+     * Derives a part of user preferences from the state of an input element.
+     * Used in the reducer function of the user preferences assembly method.
+     * @param  {Object} preferences The user preferences object.
+     * @param  {Object} input       A node element.
+     * @return {Object} The user preferences object for a given input element.
+     */
+    function inputElementValueReducer(preferences, input) {
+        var prefKey = input.name;
+
+        if (prefKey.substr(-2, 2) === '[]') {
+            prefKey = prefKey.substr(0, prefKey.length - 2);
+            if (!isArray(preferences[prefKey])) {
+                preferences[prefKey] = [];
+            }
+            // Only keep set values of checkboxes:
+            if (input.value !== undefined &&
+                    !(input.type === 'checkbox' && !input.checked)) {
+                preferences[prefKey].push(input.value);
+            }
+        } else {
+            if (!(input.type === 'checkbox' && !input.checked)) {
+                preferences[prefKey] = input.value;
+            }
+        }
+
+        return preferences;
     }
 
     /**
@@ -32,31 +60,7 @@
      * @return {Object} The user preferences object.
      */
     function assembleUserPreferences() {
-        var preferences = {};
-
-        inputElements.forEach(function (input) {
-
-            var prefKey = input.name;
-
-            if (prefKey.substr(-2, 2) === '[]') {
-                prefKey = prefKey.substr(0, prefKey.length - 2);
-                if (!isArray(preferences[prefKey])) {
-                    preferences[prefKey] = [];
-                }
-                // Only keep set values of checkboxes:
-                if (input.value !== undefined &&
-                        !(input.type === 'checkbox' && !input.checked)) {
-                    preferences[prefKey].push(input.value);
-                }
-            } else {
-                if (!(input.type === 'checkbox' && !input.checked)) {
-                    preferences[prefKey] = input.value;
-                }
-            }
-
-        });
-
-        return preferences;
+        return inputElements.reduce(inputElementValueReducer, {});
     }
 
     /**
@@ -122,13 +126,15 @@
      * @return {Undefined}
      */
     function routeTo(hash) {
-        // Obtain a reference to the section where we want to route:
-        var targetSection = document.getElementById('section-' +
-                hash.substr(1));
+        // Obtain a reference to the section where we want to route,
+        // mind that the hash contains a leading # character which
+        // is not present in the section id:
+        var targetSectionId = 'section-' + hash.substr(1),
+            targetSection = document.getElementById(targetSectionId);
         if (targetSection) {
             location.hash = hash;
             sectionsElement.style.webkitTransform = 'translateX(-' +
-                    targetSection.offsetLeft + 'px)';
+                targetSection.offsetLeft + 'px)';
         }
     }
 
@@ -182,9 +188,9 @@
     function userPreferencesLoadEventHandler(storageContainer) {
         // Chrome insists on returning a storage container in storage.sync.get 
         // API, so we need to obtain the desired property from it:
-        var preferences = storageContainer.userPreferences;
-        // On failure do NOT touch the form:
-        if (preferences && typeof preferences === 'object') {
+        var preferences = storageContainer.userPreferences || {};
+        // On failure avoid touching the form:
+        if (typeof preferences === 'object') {
             updateUserPreferencesForm(preferences);
         }
     }
@@ -203,4 +209,4 @@
     // Begin by loading previously-saved user preferences:
     storage.sync.get('userPreferences', userPreferencesLoadEventHandler);
 
-}(window, document, chrome.runtime, chrome.storage));
+}(window, document, chrome.storage));
