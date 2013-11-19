@@ -1,6 +1,6 @@
 {
-    "name": "Invasive kanji",
-    "version": "0.6.0",
+    "name": "Invasive Kanji",
+    "version": "0.6.3",
     "manifest_version": 2,
     "description": "An invasive way to learn kanji.",
     "icons": {
@@ -8,7 +8,7 @@
         "48": "images/icon_48.png",
         "128": "images/icon_128.png"
     },
-    "permissions": ["tabs"],
+    "permissions": ["tabs", "storage"],
     "options_page": "options.html",
     "background": {
         "scripts": ["background.js"]
@@ -31,6 +31,7 @@
         "contentstyle.css",
         "framecontent.html",
         "framescript.html",
-        "framestyle.css"
+        "framestyle.css",
+        "options.html"
     ]
 }

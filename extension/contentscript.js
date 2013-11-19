@@ -1,22 +1,21 @@
 /*jslint browser: true */
 /*globals chrome */
 
-(function (document, extension) {
+(function (document, runtime) {
     'use strict';
 
     var frame = document.createElement('iframe'),
         frameStyleElement = document.createElement('link'),
-        frameStyleHref = chrome.extension.getURL('contentstyle.css'),
+        frameStyleHref = runtime.getURL('contentstyle.css'),
         documentVisibilityChangeEventName = 'visibilitychange',
         documentHiddenProperty = 'hidden',
         activeElement,
-        extensionId = chrome.i18n.getMessage('@@extension_id'),
-        extensionBaseURL = 'chrome-extension://' + extensionId,
+        extensionBaseURL = 'chrome-extension://' + runtime.id,
         transitionEventName = 'webkitTransitionEnd';
 
     /**
-     * Noop does nothing.
-     * @return {Undefined} Returns nothing.
+     * The default noop function.
+     * @return {Undefined}
      */
     function noop() {}
 
@@ -114,11 +113,31 @@
     function documentVisibilityChangeHandler() {
         // Don't do anything if the document is hidden:
         if (document[documentHiddenProperty]) { return; }
-        // No need to ask again on the next document visibility change:
-        document.removeEventListener(documentVisibilityChangeEventName,
-                documentVisibilityChangeHandler);
-        // It is now safe to ask the question:
-        document.body.appendChild(frame);
+
+        // Document may change visibility multiple times:
+        if (!frame.parentNode) {
+            // It is now safe to ask the question:
+            document.body.appendChild(frame);
+        }
+
+        // ------------------------------ <HACK> -------------------------------
+        // A hack to keep in touch with the background page and ensure it is not
+        // in a disabled state, in which case a cleanup is required. At this
+        // moment the Chrome Extension API does not provide a more robust
+        // workaround (mind that this hack fails for already open pages...);
+        // see: https://code.google.com/p/chromium/issues/detail?id=19383
+        try {
+            // Background doesn't need to reply here:
+            runtime.sendMessage('ping');
+        } catch (e) {
+            // Clean up the no longer necessary event listener:
+            document.removeEventListener(documentVisibilityChangeEventName,
+                    documentVisibilityChangeHandler);
+            // Cannot use proceedToPage function here because it will try to
+            // send the restoreFocus request which will fail with an error:
+            removeFrame();
+        }
+        // ----------------------------- </HACK> -------------------------------
     }
 
     /**
@@ -135,7 +154,7 @@
             callback = noop;
         }
 
-        if (request.makeFrameVisible) {
+        if (request === 'frameVisibilityRequest') {
 
             setOpacity(frame, 1, callback);
 
@@ -161,20 +180,22 @@
         return true;
     }
 
+    /* -------------------------------- MAIN -------------------------------- */
+
     // Avoid troubles with framesets by working with body only:
     if (document.body.nodeName !== 'BODY') { return; }
 
     // Inject the frame styles programmatically in order to avoid flickering:
     frameStyleElement.href = frameStyleHref;
     frameStyleElement.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(frameStyleElement);
+    document.querySelector('head').appendChild(frameStyleElement);
 
     // Set up the listener first to ensure all messages are received:
-    extension.onMessage.addListener(messageHandler);
+    runtime.onMessage.addListener(messageHandler);
 
     // Configure the frame:
     frame.id = 'extension-invasive-kanji-coversheet';
-    frame.src = extension.getURL('framecontent.html');
+    frame.src = runtime.getURL('framecontent.html');
     // Explicitly set border width to avoid flashing of the iframe:
     frame.style.borderWidth = 0;
 
@@ -186,11 +207,10 @@
 
     // We should wait for the document to become visible before asking the
     // question, otherwise the user won't be able to timely answer it:
-    if (document[documentHiddenProperty]) {
-        document.addEventListener(documentVisibilityChangeEventName,
-                documentVisibilityChangeHandler);
-    } else {
+    document.addEventListener(documentVisibilityChangeEventName,
+        documentVisibilityChangeHandler);
+    if (!document[documentHiddenProperty]) {
         document.body.appendChild(frame);
     }
 
-}(document, chrome.extension));
+}(document, chrome.runtime));

@@ -8,10 +8,9 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Download the [latest beta](https://github.com/olegskl/invasive-kanji/blob/master/extension.zip?raw=true) (recommended) or the [development version](https://github.com/olegskl/invasive-kanji/blob/develop/extension.zip?raw=true) of the repository.
-2. Unarchive the downloaded file to your preferred location (whichever suits you).
-3. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
-4. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory and confirm.
+1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/downloads/0.6.3/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
+2. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
+3. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory of the downloaded release and confirm.
 
 If you have completed the above steps, the "options" page will open indicating successfull installation of the extension. Start browsing the Internet and learning Japanese at the same time.
 
@@ -25,17 +24,18 @@ If you feel tired, or need to be really productive in the next couple of hours, 
 
 You can access the extension options by clicking the "options" link on the bottom of the question interface or in your installed extensions list.
 
-### Changelog of v0.6 beta
+### Changelog of v0.6.3 (beta)
 
-- Both "options" and "about" page now open in a new tab by default;
-- When multiple "options" pages are open at the same time, modifications in one of them are now immediately reflected in others;
-- Fixed iframe rectangle flickering just before the main interface is rendered;
-- Fixed unexpected section transition on the "about" page;
-- Realigned the elements of the main interface;
-- Added a progress indicator of the question timer to the main interface.
+- Extension options now automatically sync to any Chrome browser that the user is logged into, provided the user has sync enabled.
+- Improves random question selection mechanism.
+- Fixes failure to open options from a question page (issue #8).
+- Fixes (tentatively) failure to clean up questions when extension is disabled or uninstalled.
+- Fixes (tentatively) lost focus on the answer field in certain cases.
 
 ### License
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" align="absmiddle"></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
 
 This package uses the KANJIDIC dictionary file. This file is the property of the [Electronic Dictionary Research and Development Group](http://www.edrdg.org/), and is used in conformance with the Group's [license](http://www.edrdg.org/edrdg/licence.html).
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png"></a>
