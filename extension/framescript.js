@@ -31,7 +31,7 @@
         focusTheftCount = 0,
         timer,
         timerDuration = 10000,
-        transitionEventName = 'webkitTransitionEnd'; // vendor prefixes...
+        transitionEndEventName = 'webkitTransitionEnd'; // vendor prefixes...
 
     /**
      * Noop does nothing.
@@ -99,17 +99,16 @@
     }
 
     /**
-     * Asynchronously requests a dictionary entry and invokes a callback.
+     * Asynchronously requests a dictionary entry from the background script.
      * @param  {Function}  callback Callback with a response argument.
      * @return {Undefined}
      */
     function requestRandomDictionaryEntry(callback) {
-        // Request a random dictionary entry from the background script:
         extension.sendMessage('randomDictionaryEntryRequest', callback);
     }
 
     /**
-     * Asynchronously requests frame visibility and invokes a callback.
+     * Asynchronously requests frame visibility from contentscript.
      * @param  {Function} callback Callback with a response argument.
      * @return {Undefined}
      */
@@ -141,20 +140,26 @@
                 // can safely assume it's not a theft:
                 currentQuestion.nodes.answerElement.focus();
                 callback({error: null});
-            } else if (response.extensionHasFocus) {
+                return;
+            }
+            if (response.extensionHasFocus) {
                 // Avoid stealing from ourselves:
                 callback({error: null});
+                return;
+            }
+            // Keep count of how many times the focus has been stolen:
+            focusTheftCount += 1;
+            if (focusTheftCount > maxTheftCountAllowed) {
+                callback({error: 'Maximum focus theft limit exceeded.'});
+                proceedToPage();
             } else {
-                // Keep count of how many times the focus has been stolen:
-                focusTheftCount += 1;
-                if (focusTheftCount > maxTheftCountAllowed) {
-                    callback({error: 'Maximum focus theft limit exceeded.'});
-                    // proceedToPage();
-                } else {
-                    // Steal focus by setting it to the answer element:
+                // Steal focus by setting it to the answer element,
+                // attempt to ensure focus by delaying the :
+                currentQuestion.nodes.answerElement.blur();
+                setTimeout(function () {
                     currentQuestion.nodes.answerElement.focus();
                     callback({error: null});
-                }
+                }, 1);
             }
         });
     }
@@ -229,29 +234,40 @@
      */
     function removeQuestion(questionIndex) {
         var question = questions[questionIndex],
-            nodeKey,
-            nodes;
+            nodeKey;
 
         if (!question || !question.nodes) { return; }
 
-        // Just a shortcut:
-        nodes = question.nodes;
-
         // 1. Remove event handlers:
-        nodes.answerElement.removeEventListener(keypressHandler);
+        question.nodes.answerElement.removeEventListener(keypressHandler);
         // 2. Remove the elements themselves from the DOM:
-        nodes.container.remove();
-        nodes.container.innerHTML = '';
+        question.nodes.container.remove();
+        question.nodes.container.innerHTML = '';
         // 3. Destroy references to DOM elements:
-        for (nodeKey in nodes) {
-            if (nodes.hasOwnProperty(nodeKey)) {
-                delete nodes[nodeKey];
+        for (nodeKey in question.nodes) {
+            if (question.nodes.hasOwnProperty(nodeKey)) {
+                delete question.nodes[nodeKey];
             }
         }
-        nodes = null;
         delete question.nodes;
         // 4. Remove the question:
         questions.splice(questionIndex, 1);
+    }
+
+    /**
+     * Handles the end of container transition by focusing on the answer field,
+     * removing the previous question and setting the timer.
+     * @return {Undefined}
+     */
+    function containerTransitionEndHandler() {
+        // Focus the answer element only when the transition has ended,
+        // otherwise expect unexpected behavior:
+        currentQuestion.nodes.answerElement.focus();
+        // Remove the previous question:
+        removeQuestion(0);
+        // The transition has finished and the previous question has
+        // been removed so it is now safe to start the timer:
+        setTimer();
     }
 
     /**
@@ -270,27 +286,21 @@
             return;
         }
 
-        // ...
-        currentQuestion = question;
-
         // Reset the focus theft counter:
         focusTheftCount = 0;
 
         // Shortcut to the question container:
         container = question.nodes.container;
 
-        resetAnswerElement(question.nodes.answerElement);
+        setupAnswerElement(question.nodes.answerElement);
 
-        container.addEventListener(transitionEventName, function () {
-            // Focus the answer element only when the transition has ended,
-            // otherwise expect unexpected behavior:
-            question.nodes.answerElement.focus();
-            // Remove the previous question:
-            removeQuestion(0);
-            // The transition has finished and the previous question has
-            // been removed so it is now safe to start the timer:
-            setTimer();
-        });
+        // Keep a reference to the question as current:
+        // (mind that we need to do it before re)
+        currentQuestion = question;
+
+        // Set up a handler for transition end event:
+        container.addEventListener(transitionEndEventName,
+            containerTransitionEndHandler);
 
         // Clear the timer so that it doesn't kick in during transition:
         clearTimer();
@@ -338,17 +348,20 @@
             correctAnswerElement.className = 'correctAnswer hidden';
         }
 
-        // Temporary workaround to avoid asking for a hiragana/katakana meaning:
+        // A workaround to avoid asking for hiragana/katakana meanings:
         answerElement.placeholder = (question.meanings) ?
             'type the meaning...' :
             'type the reading...';
 
-        // Render the question term inside of the question's DOM element:
-        questionElement.innerHTML = question.term;
-
+        // When both the readings and the meanings are provided, it is implied
+        // that we need to hint readings and not display meanings at all,
+        // otherwise it would be answering the question itself:
         if (question.meanings && question.readings) {
             readingsElement.innerHTML = question.readings.join(', ');
         }
+
+        // Render the question term inside of the question's DOM element:
+        questionElement.innerHTML = question.term;
 
         // Set more styles before appending:
         questionElement.className = 'question';
@@ -479,7 +492,7 @@
      * @param  {Object}    element DOM element.
      * @return {Undefined}
      */
-    function resetAnswerElement(element) {
+    function setupAnswerElement(element) {
         // Reset the value to prevent the browser being too helpful:
         element.value = '';
         // Listen to keypress events:
