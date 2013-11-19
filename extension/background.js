@@ -143,7 +143,7 @@
 
     /**
      * Handles chrome runtime onInstalled event by opening the options page.
-     * @see http://developer.chrome.com/extensions/runtime.html#event-onInstalled
+     * @see http://developer.chrome.com/extensions/runtime.html
      * @param  {Object}    details Container for onInstalled event properties.
      * @return {Undefined}
      */
