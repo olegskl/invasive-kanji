@@ -16,6 +16,8 @@ There are many features planned ahead. If you have suggestions or problems using
 
 If you have completed the above steps, the "options" page will open indicating successfull installation of the extension. Start browsing the Internet and learning Japanese at the same time.
 
+To read the changelog or download another version take a look at the [releases page](https://github.com/olegskl/invasive-kanji/releases).
+
 ### Usage
 
 To use the extension simply start browsing the Internet. Once a web page loads, a random question will be presented to you, hiding the contents of the page. To see the page you have to answer correctly within ten seconds!
