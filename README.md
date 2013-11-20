@@ -1,5 +1,7 @@
 # <img src="/extension/images/icon_48.png" align="absmiddle"> Invasive Kanji
 
+[![Code Climate](https://codeclimate.com/github/olegskl/invasive-kanji.png)](https://codeclimate.com/github/olegskl/invasive-kanji)
+
 "Invasive Kanji" is a free and open-source Google Chrome extension for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will *make* you study kanji and/or kana as you browse the Internet.
 
 The extension tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.
