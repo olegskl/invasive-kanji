@@ -26,14 +26,6 @@ If you feel tired, or need to be really productive in the next couple of hours, 
 
 You can access the extension options by clicking the "options" link on the bottom of the question interface or in your installed extensions list.
 
-### Changelog of v0.6.3 (beta)
-
-- Extension options now automatically sync to any Chrome browser that the user is logged into, provided the user has sync enabled.
-- Improves random question selection mechanism.
-- Fixes failure to open options from a question page (issue #8).
-- Fixes (tentatively) failure to clean up questions when extension is disabled or uninstalled.
-- Fixes (tentatively) lost focus on the answer field in certain cases.
-
 ### License
 
 This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
