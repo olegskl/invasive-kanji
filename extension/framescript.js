@@ -197,7 +197,7 @@
     /**
      * Simplifies an answer by removing extraneous information in brackets.
      * @example
-     *     simplifyCorrectAnswer("second (1/60 of a minute)"); // "second"
+     *     simplifyCorrectAnswer("second (1/60 minute)"); // "second"
      *     simplifyCorrectAnswer("(used phonetically)"); // ""
      * @param  {String} answer Any singular answer.
      * @return {String}        Simplified answer.
@@ -217,14 +217,14 @@
         // Ensure all answers are lowercase:
         answer = answer.toLowerCase();
         // Add unmodified answer to the result so that it is still possible to
-        // answer in non-user-friendly fashion, e.g. "second (1/60 of minute)":
+        // answer in non-user-friendly fashion, e.g. "second (1/60 minute)":
         result.push(answer);
-        // Now simplify the answer, e.g. "second (abc)" => "second":
+        // Now simplify the answer, e.g. "second (1/60 minute)" => "second":
         simplifiedAnswer = simplifyCorrectAnswer(answer);
         // Add the simplified version to the answer list if it's different from
         // the original answer, so that the user can answer both as "second" and
-        // "second (1/60 of a minute)" to a question with "second (1/60 of a
-        // minute)" answer:
+        // "second (1/60 minute)" to a question with "second (1/60 minute)"
+        // answer:
         if (simplifiedAnswer && simplifiedAnswer !== answer) {
             result.push(simplifiedAnswer);
         }
