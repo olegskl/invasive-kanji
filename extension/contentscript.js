@@ -138,9 +138,6 @@
             // Background doesn't need to reply here:
             runtime.sendMessage('ping');
         } catch (e) {
-            // Clean up the no longer necessary event listener:
-            document.removeEventListener(documentVisibilityChangeEventName,
-                    documentVisibilityChangeHandler);
             // Cannot use proceedToPage function here because it will try to
             // send the restoreFocus request which will fail with an error:
             removeFrame();
