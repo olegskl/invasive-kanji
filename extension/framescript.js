@@ -179,32 +179,75 @@
      * Returns an array of answers provided by the user.
      * @return {Array} An array of answers.
      */
-    function getUserAnswer() {
+    function getUserAnswers() {
         return parseAnswer(currentQuestion.nodes.answerElement.value);
     }
 
     /**
-     * Lowercases a string (for usage in Array.prototype.map).
-     * @param  {String} str A string value to lowercase.
-     * @return {String}     The lowercased input string.
+     * Returns an array of correct answers for a given question.
+     * @return {Array} An array of correct answers.
      */
-    function lowerCase(str) {
-        return str.toLowerCase();
+    function getCorrectAnswers(question) {
+        // Correct answers may be meanings or readings depending on the
+        // dictionary in use. Instead of hard-coding the dictionary names in
+        // this function, use duck-typing and give priority to meanings.
+        return question.meanings || question.readings || [];
+    }
+
+    /**
+     * Simplifies an answer by removing extraneous information in brackets.
+     * @example
+     *     simplifyCorrectAnswer("second (1/60 minute)"); // "second"
+     *     simplifyCorrectAnswer("(used phonetically)"); // ""
+     * @param  {String} answer Any singular answer.
+     * @return {String}        Simplified answer.
+     */
+    function simplifyCorrectAnswer(answer) {
+        return answer.replace(/ ?\(.*\)/g, '').trim();
+    }
+
+    /**
+     * Answer reducer function for getUserFriendlyCorrectAnswers function.
+     * @param  {Array}  result Resulting array.
+     * @param  {String} answer An non-user-friendly answer.
+     * @return {Array}         Updated resulting array.
+     */
+    function userFriendlyAnswerReducer(result, answer) {
+        var simplifiedAnswer;
+        // Ensure all answers are lowercase:
+        answer = answer.toLowerCase();
+        // Add unmodified answer to the result so that it is still possible to
+        // answer in non-user-friendly fashion, e.g. "second (1/60 minute)":
+        result.push(answer);
+        // Now simplify the answer, e.g. "second (1/60 minute)" => "second":
+        simplifiedAnswer = simplifyCorrectAnswer(answer);
+        // Add the simplified version to the answer list if it's different from
+        // the original answer, so that the user can answer both as "second" and
+        // "second (1/60 minute)" to a question with "second (1/60 minute)"
+        // answer:
+        if (simplifiedAnswer && simplifiedAnswer !== answer) {
+            result.push(simplifiedAnswer);
+        }
+        return result;
+    }
+
+    /**
+     * Computes user-friendly answers for a given question.
+     * @param  {Object} question A question object.
+     * @return {Array}           An array of answers.
+     */
+    function getUserFriendlyCorrectAnswers(question) {
+        return getCorrectAnswers(question)
+            .reduce(userFriendlyAnswerReducer, []);
     }
 
     /**
      * Validates a given set of answers for correctness.
-     * @param  {Array}   userAnswers Answers provided by user.
-     * @return {Boolean}             TRUE if the entire answer set is correct.
+     * @param  {Array}   userAnswers    Answers provided by user.
+     * @param  {Array}   correctAnswers Correct answers from the dictionary.
+     * @return {Boolean} TRUE if the entire answer set is correct.
      */
-    function isCorrectAnswer(userAnswers) {
-        // Correct answers may be meanings or readings depending on the
-        // dictionary in use. Instead of hard-coding the dictionary names in
-        // this function, use duck-typing and give priority to meanings. Also
-        // note that the resulting set of answers must be lowercased:
-        var correctAnswers = (currentQuestion.meanings ||
-                currentQuestion.readings).map(lowerCase);
-
+    function areCorrectAnswers(userAnswers, correctAnswers) {
         // Every item in the answer set provided by user must be correct:
         return userAnswers.every(function (userAnswer) {
             return (correctAnswers.indexOf(userAnswer) !== -1);
@@ -467,6 +510,17 @@
     }
 
     /**
+     * Determines if the user has answered a question correctly.
+     * @param  {Object}  question A question to validate.
+     * @return {Boolean}          True on correct answer, false otherwise.
+     */
+    function userAnsweredCorrectly(question) {
+        var userAnswers = getUserAnswers(),
+            correctAnswers = getUserFriendlyCorrectAnswers(question);
+        return areCorrectAnswers(userAnswers, correctAnswers);
+    }
+
+    /**
      * Handler for keypress events in any particular answer field.
      * @param  {Object}    event Event object.
      * @return {Undefined}
@@ -480,7 +534,8 @@
         // currentQuestion.nodes.answerElement
         event.target.removeEventListener('keypress', keypressHandler);
 
-        if (isCorrectAnswer(getUserAnswer())) {
+        // Decide what to do next:
+        if (userAnsweredCorrectly(currentQuestion)) {
             handleCorrectAnswer();
         } else {
             handleIncorrectAnswer();

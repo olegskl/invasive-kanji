@@ -1,5 +1,7 @@
 # <img src="/extension/images/icon_48.png" align="absmiddle"> Invasive Kanji
 
+[![Code Climate](https://codeclimate.com/github/olegskl/invasive-kanji.png)](https://codeclimate.com/github/olegskl/invasive-kanji)
+
 "Invasive Kanji" is a free and open-source Google Chrome extension for people who lack motivation or time to learn Japanese. Once installed and enabled, this extension will *make* you study kanji and/or kana as you browse the Internet.
 
 The extension tries to be as invasive as possible, but without ill side effects. It doesn't track browsing activity, doesn't steal information, doesn't affect functionality of the websites you visit.
@@ -8,11 +10,13 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/download/0.6.3/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
+1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/download/0.6.4/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
 2. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
 3. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory of the downloaded release and confirm.
 
 If you have completed the above steps, the "options" page will open indicating successfull installation of the extension. Start browsing the Internet and learning Japanese at the same time.
+
+To read the changelog or download another version take a look at the [releases page](https://github.com/olegskl/invasive-kanji/releases).
 
 ### Usage
 
@@ -23,14 +27,6 @@ If you fail to provide a correct answer in time, a valid answer will be displaye
 If you feel tired, or need to be really productive in the next couple of hours, you can temporarily disable the application by navigating to chrome://extensions/ and unchecking the "Enabled" checkbox next to "Invasive Kanji".
 
 You can access the extension options by clicking the "options" link on the bottom of the question interface or in your installed extensions list.
-
-### Changelog of v0.6.3 (beta)
-
-- Extension options now automatically sync to any Chrome browser that the user is logged into, provided the user has sync enabled.
-- Improves random question selection mechanism.
-- Fixes failure to open options from a question page (issue #8).
-- Fixes (tentatively) failure to clean up questions when extension is disabled or uninstalled.
-- Fixes (tentatively) lost focus on the answer field in certain cases.
 
 ### License
 
