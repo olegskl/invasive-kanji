@@ -8,7 +8,7 @@
         "48": "images/icon_48.png",
         "128": "images/icon_128.png"
     },
-    "permissions": ["tabs", "storage"],
+    "permissions": ["storage"],
     "options_page": "options.html",
     "background": {
         "scripts": ["background.js"]
