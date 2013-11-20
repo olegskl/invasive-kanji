@@ -51,7 +51,7 @@
     }
 
     /**
-     * Restores the previously-stolen focus.
+     * Attempts to restore the previously-stolen focus and clears reference.
      * @return {Undefined}
      */
     function restoreFocus() {
@@ -62,16 +62,24 @@
     }
 
     /**
-     * Removes the frame and its styling from the DOM.
+     * Removes refs, event listeners, the frame and its styling from the DOM.
      * @return {Undefined}
      */
     function removeFrame() {
-        if (frameStyleElement && frameStyleElement.remove) {
-            frameStyleElement.remove();
-        }
+        // Document visibility change handler is no longer necessary once frame
+        // has been removed:
+        document.removeEventListener(documentVisibilityChangeEventName,
+            documentVisibilityChangeHandler);
+
+        // Remove the elements:
         if (frame && frame.remove) {
             frame.remove();
         }
+        if (frameStyleElement && frameStyleElement.remove) {
+            frameStyleElement.remove();
+        }
+
+        // Clean up references:
         frameStyleElement = null;
         frame = null;
     }
