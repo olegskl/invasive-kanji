@@ -398,18 +398,52 @@
     }
 
     /**
+     * Constructs question structure.
+     * @param  {Boolean} isOffScreen Whether to render on or off screen.
+     * @return {Object}              An object containing DOM nodes.
+     */
+    function buildQuestionStructure(isOffScreen) {
+        var nodes = {
+                container: document.createElement('div'),
+                questionElement: document.createElement('div'),
+                answerElement: document.createElement('input'),
+                correctAnswerElement: document.createElement('div'),
+                readingsElement: document.createElement('div')
+            };
+
+        // Set more styles before appending:
+        nodes.questionElement.className = 'question';
+        nodes.answerElement.className = 'answer';
+        nodes.readingsElement.className = 'readings';
+
+        // When adding a first question, it is added directly on page and event
+        // handlers are assigned; otherwise, the question is created off screen
+        // and doesn't respond to user activity until necessary:
+        if (isOffScreen) {
+            nodes.container.className = 'container offscreen';
+            nodes.correctAnswerElement.className = 'correctAnswer hidden';
+        } else {
+            nodes.answerElement.addEventListener('keypress', keypressHandler);
+            nodes.container.className = 'container';
+            nodes.correctAnswerElement.className = 'correctAnswer';
+        }
+
+        nodes.container.appendChild(nodes.questionElement);
+        nodes.container.appendChild(nodes.answerElement);
+        nodes.container.appendChild(nodes.correctAnswerElement);
+        nodes.container.appendChild(nodes.readingsElement);
+
+        return nodes;
+    }
+
+    /**
      * Adds an additional question to the current question pool.
      * @param {Object} question The question object.
      * @return {Undefined}
      */
     function addQuestion(question, callback) {
-        // Create essential elements of the question GUI:
-        var container = document.createElement('div'),
-            questionElement = document.createElement('div'),
-            answerElement = document.createElement('input'),
-            correctAnswerElement = document.createElement('div'),
-            readingsElement = document.createElement('div'),
-            isFirstQuestion = !questions.length;
+        var isFirstQuestion = !questions.length,
+            nodes;
 
         // The question must be an object:
         if (!question || typeof question !== 'object') {
@@ -422,21 +456,12 @@
             return;
         }
 
-        // When adding a first question, it is added directly on page and event
-        // handlers are assigned; otherwise, the question is created off screen
-        // and doesn't respond to user activity until necessary:
-        if (isFirstQuestion) {
-            currentQuestion = question;
-            answerElement.addEventListener('keypress', keypressHandler);
-            container.className = 'container';
-            correctAnswerElement.className = 'correctAnswer';
-        } else {
-            container.className = 'container offscreen';
-            correctAnswerElement.className = 'correctAnswer hidden';
-        }
+        // Create essential elements of the question GUI and keep references
+        // to various elements of the question GUI:
+        nodes = question.nodes = buildQuestionStructure(!isFirstQuestion);
 
         // A workaround to avoid asking for hiragana/katakana meanings:
-        answerElement.placeholder = (question.meanings) ?
+        nodes.answerElement.placeholder = (question.meanings) ?
             'type the meaning...' :
             'type the reading...';
 
@@ -444,39 +469,22 @@
         // that we need to hint readings and not display meanings at all,
         // otherwise it would be answering the question itself:
         if (question.meanings && question.readings) {
-            readingsElement.innerHTML = question.readings.join(', ');
+            nodes.readingsElement.innerHTML = question.readings.join(', ');
         }
 
         // Render the question term inside of the question's DOM element:
-        questionElement.innerHTML = question.term;
+        nodes.questionElement.innerHTML = question.term;
 
-        // Set more styles before appending:
-        questionElement.className = 'question';
-        answerElement.className = 'answer';
-        readingsElement.className = 'readings';
+        // Add the question structure to the document:
+        wrapper.appendChild(question.nodes.container);
 
-        container.appendChild(questionElement);
-        container.appendChild(answerElement);
-        container.appendChild(correctAnswerElement);
-        container.appendChild(readingsElement);
-
-        // Keep references to various elements of the question GUI:
-        question.nodes = {
-            container: container,
-            questionElement: questionElement,
-            answerElement: answerElement,
-            correctAnswerElement: correctAnswerElement,
-            readingsElement: readingsElement
-        };
-
-        wrapper.appendChild(container);
-
-        // Finally add the question to the question pool to keep track of all
-        // questions that have been added:
+        // Add the question to the question pool to keep track of all questions
+        // that have been added:
         questions.push(question);
 
-        // Focus the cursor on the answer field:
         if (isFirstQuestion) {
+            currentQuestion = question;
+            // Request focus of the cursor on the answer field:
             stealFocus(callback);
         } else {
             callback({error: null});
