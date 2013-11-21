@@ -40,6 +40,45 @@
     function noop() {}
 
     /**
+     * Compute weighted edit distance (Damerau-Levenshtein) between two words.
+     * @param  {String} a Compared word.
+     * @param  {String} b Reference word.
+     * @return {Number}   The computed distance.
+     */
+    function getEditDistance(a, b) {
+        var matrix = [],
+            i, j, cost;
+
+        for (i = 0; i <= a.length; i += 1) {
+            matrix[i] = [i];
+        }
+        for (i = 0; i <= b.length; i += 1) {
+            matrix[0][i] = i;
+        }
+
+        for (i = 1; i <= a.length; i += 1) {
+            for (j = 1; j <= b.length; j += 1) {
+                cost = (a[i - 1] === b[j - 1]) ? 0 : 1;
+                matrix[i][j] = (i > 1 && j > 1 &&
+                        (a[i - 1] === b[j - 2]) && (a[i - 2] === b[j - 1])) ?
+                    Math.min(
+                        matrix[i - 1][j] + 2, // deletion
+                        matrix[i][j - 1] + 2, // insertion
+                        matrix[i - 1][j - 1] + cost, // substitution
+                        matrix[i - 2][j - 2] + cost // transposition
+                    ) :
+                    Math.min(
+                        matrix[i - 1][j] + 2, // deletion
+                        matrix[i][j - 1] + 2, // insertion
+                        matrix[i - 1][j - 1] + cost // substitution
+                    );
+            }
+        }
+
+        return matrix[a.length][b.length];
+    }
+
+    /**
      * Assigns an event handler that is only executed once, then removed.
      * @param {Object}   subject      Observable subject.
      * @param {String}   eventName    Event name.
@@ -250,7 +289,12 @@
     function areCorrectAnswers(userAnswers, correctAnswers) {
         // Every item in the answer set provided by user must be correct:
         return userAnswers.every(function (userAnswer) {
-            return (correctAnswers.indexOf(userAnswer) !== -1);
+            return correctAnswers.some(function (correctAnswer) {
+                return (userAnswer === correctAnswer) || (
+                        (correctAnswer.length > 2) &&
+                        (getEditDistance(userAnswer, correctAnswer) === 1)
+                    );
+            });
         });
     }
 
