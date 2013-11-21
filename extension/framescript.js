@@ -10,7 +10,7 @@
 // 6. Start the timer;
 // 7. Wait for the user to answer the question;
 // 8. Stop the timer;
-// 9. If user's answer is correct – proceed to the page and request a cleanup;
+// 9. If user answered correctly – proceed to the page and request a cleanup;
 // 10. Display the correct answer;
 // 11. Request another random dictionary entry from the backround page;
 // 12. Construct another question's GUI off screen;
