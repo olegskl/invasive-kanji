@@ -3,9 +3,8 @@
 'use strict';
 
 var fs = require('fs'), // filesystem
-    util = require('util'), // utilities
     eol = /\r?\n/, // end-of-line marker regex
-    kana = /[\u3041-\u3096|\u30A1-\u30FA]/,
+    // kana = /[\u3041-\u3096|\u30A1-\u30FA]/,
     userFriendlyMeanings = {
         '\u4E00': ['1'],
         '\u4E8C': ['2'],
@@ -68,7 +67,6 @@ function parseLine(line, options) {
     var grade, // placeholder for kanji grade
         meanings, // placeholder for a list of meanings of a given term
         readings, // placeholder for a list of readings of a given term
-        index = 0, // search helper
         firstKanaIndex, // index of first occurence of any kana
         nanoriMarkIndex; // T1
 
