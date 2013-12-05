@@ -21,7 +21,8 @@
 (function (document, runtime) {
     'use strict';
 
-    var wrapper = document.body,
+    var kanjiLookupURL = 'http://jisho.org/kanji/details/%s',
+        wrapper = document.body,
         questions = [], // list of questions to be asked
         currentQuestion,
         infoElement = document.getElementById('info'),
@@ -405,7 +406,7 @@
     function buildQuestionStructure(isOffScreen) {
         var nodes = {
                 container: document.createElement('div'),
-                questionElement: document.createElement('div'),
+                questionElement: document.createElement('a'),
                 answerElement: document.createElement('input'),
                 correctAnswerElement: document.createElement('div'),
                 readingsElement: document.createElement('div')
@@ -434,6 +435,30 @@
         nodes.container.appendChild(nodes.readingsElement);
 
         return nodes;
+    }
+
+    /**
+     * Configures the given question element according to the given question.
+     * @param  {NodeElement} element  The element to setup.
+     * @param  {Object}      question A question to use for setup.
+     * @return {Undefined}
+     */
+    function setupQuestionElement(element, question) {
+        // Render the question term inside of the question's DOM element:
+        element.innerHTML = question.term;
+
+        if (question.dictionary === 'kanji') {
+            // External links must open in a new tab, otherwise they won't be
+            // visible because the frame is covering the page:
+            element.target = '_blank';
+
+            // Ensure that the href attribute is properly encoded:
+            element.href = kanjiLookupURL
+                .replace('%s', encodeURIComponent(question.term));
+
+            // Prevent cheating by launching the answer check on link click:
+            addEventHandlerCalledOnce(element, 'click', handleAnswer);
+        }
     }
 
     /**
@@ -472,8 +497,8 @@
             nodes.readingsElement.innerHTML = question.readings.join(', ');
         }
 
-        // Render the question term inside of the question's DOM element:
-        nodes.questionElement.innerHTML = question.term;
+        // The actual question text, event handlers, etc.:
+        setupQuestionElement(nodes.questionElement, question);
 
         // Add the question structure to the document:
         wrapper.appendChild(question.nodes.container);
@@ -573,24 +598,32 @@
     }
 
     /**
-     * Handler for keypress events in any particular answer field.
-     * @param  {Object}    event Event object.
+     * Handles user answer for the current question.
      * @return {Undefined}
      */
-    function keypressHandler(event) {
-        // Only wait for the "enter" key to be pressed:
-        if (event.which !== 13) { return; }
-
+    function handleAnswer() {
         // Clean up event handlers:
         window.removeEventListener('blur', stealFocus);
-        // currentQuestion.nodes.answerElement
-        event.target.removeEventListener('keypress', keypressHandler);
+        currentQuestion.nodes.answerElement
+            .removeEventListener('keypress', keypressHandler);
 
         // Decide what to do next:
         if (userAnsweredCorrectly(currentQuestion)) {
             handleCorrectAnswer();
         } else {
             handleIncorrectAnswer();
+        }
+    }
+
+    /**
+     * Handler for keypress events in any particular answer field.
+     * @param  {Object}    event Event object.
+     * @return {Undefined}
+     */
+    function keypressHandler(event) {
+        // Only wait for the "enter" key to be pressed:
+        if (event.which === 13) {
+            handleAnswer();
         }
     }
 
