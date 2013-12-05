@@ -18,7 +18,7 @@
 // 14. Transition the GUI to the screen;
 // 15. Goto #6.
 
-(function (document, extension) {
+(function (document, runtime) {
     'use strict';
 
     var wrapper = document.body,
@@ -134,7 +134,7 @@
         // Because this code runs in an iframe that has a different domain than
         // the actual page, we need to delegate the removal of the iframe to
         // the contentscript (via background page):
-        extension.sendMessage({proceedToPage: true});
+        runtime.sendMessage({proceedToPage: true});
     }
 
     /**
@@ -143,7 +143,7 @@
      * @return {Undefined}
      */
     function requestRandomDictionaryEntry(callback) {
-        extension.sendMessage('randomDictionaryEntryRequest', callback);
+        runtime.sendMessage('randomDictionaryEntryRequest', callback);
     }
 
     /**
@@ -152,7 +152,7 @@
      * @return {Undefined}
      */
     function requestFrameVisibility(callback) {
-        extension.sendMessage('frameVisibilityRequest', callback);
+        runtime.sendMessage('frameVisibilityRequest', callback);
     }
 
     // The stupid stealFocus function should probably be broken down in two,
@@ -170,7 +170,7 @@
         }
         // Notify the background script that we would like to have focus back,
         // and when the theft is authorized - perform it:
-        extension.sendMessage({storeFocus: true}, function (response) {
+        runtime.sendMessage({storeFocus: true}, function (response) {
             // Ensure the response is an object:
             if (!response) { response = {}; }
 
@@ -392,9 +392,9 @@
         // Clear the timer so that it doesn't kick in during transition:
         clearTimer();
 
-        setTimeout(function () {
-            container.classList.remove('offscreen');
-        }, 1);
+        // We now want the container to become visible, so removing "offscreen"
+        // class is necessary:
+        container.classList.remove('offscreen');
     }
 
     /**
@@ -648,4 +648,4 @@
 
     });
 
-}(document, chrome.extension));
+}(document, chrome.runtime));
