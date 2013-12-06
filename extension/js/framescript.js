@@ -291,6 +291,29 @@
     }
 
     /**
+     * Computes a levenshtein distance tolerance for a given length of a word.
+     * @param  {String} length Length of a word (ideally of the correct answer).
+     * @return {Number}        Tolerable distance.
+     */
+    function distanceTolerance(length) {
+        return (length > 2)
+            ? Math.floor(Math.pow(length, 1/3))
+            : 0;
+    }
+
+    /**
+     * Validates a given answer for correctness with adjustment for typos.
+     * @param  {String}  userAnswer    Answer provided by the user.
+     * @param  {String}  correctAnswer Correct answer from the dictionary.
+     * @return {Boolean}               TRUE if correct even if typos are present
+     */
+    function isCorrectAnswer(userAnswer, correctAnswer) {
+        return (userAnswer === correctAnswer) ||
+            (getEditDistance(userAnswer, correctAnswer) <=
+                distanceTolerance(correctAnswer.length));
+    }
+
+    /**
      * Validates a given set of answers for correctness.
      * @param  {Array}   userAnswers    Answers provided by user.
      * @param  {Array}   correctAnswers Correct answers from the dictionary.
@@ -300,10 +323,7 @@
         // Every item in the answer set provided by user must be correct:
         return userAnswers.every(function (userAnswer) {
             return correctAnswers.some(function (correctAnswer) {
-                return (userAnswer === correctAnswer) || (
-                        (correctAnswer.length > 2) &&
-                        (getEditDistance(userAnswer, correctAnswer) === 1)
-                    );
+                return isCorrectAnswer(userAnswer, correctAnswer);
             });
         });
     }
