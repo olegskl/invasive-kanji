@@ -237,13 +237,22 @@
     /**
      * Simplifies an answer by removing extraneous information in brackets.
      * @example
+     *     simplifyCorrectAnswer(" whitespace "); // "whitespace"
+     *     simplifyCorrectAnswer("a unit"); // "unit"
+     *     simplifyCorrectAnswer("the government"); // "government"
+     *     simplifyCorrectAnswer("take a seat"); // "take a seat" - no change
+     *     simplifyCorrectAnswer("fetch the ball"); // "fetch the ball"
      *     simplifyCorrectAnswer("second (1/60 minute)"); // "second"
+     *     simplifyCorrectAnswer("a second (1/60 minute)"); // "second"
      *     simplifyCorrectAnswer("(used phonetically)"); // ""
      * @param  {String} answer Any singular answer.
      * @return {String}        Simplified answer.
      */
     function simplifyCorrectAnswer(answer) {
-        return answer.replace(/ ?\(.*\)/g, '').trim();
+        return answer.trim() // trim any extra white space: " abc " -> "abc"
+            .replace(/^a |^the /, '') // strip articles in the beginning
+            .replace(/ ?\(.*\)/g, '') // strip brackets and their contents
+            .trim(); // extra trim to catch edge cases
     }
 
     /**
