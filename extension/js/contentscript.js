@@ -6,7 +6,7 @@
 
     var frame = document.createElement('iframe'),
         frameStyleElement = document.createElement('link'),
-        frameStyleHref = runtime.getURL('contentstyle.css'),
+        frameStyleHref = runtime.getURL('css/contentstyle.css'),
         documentVisibilityChangeEventName = 'visibilitychange',
         documentHiddenProperty = 'hidden',
         activeElement,

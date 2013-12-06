@@ -36,7 +36,7 @@ h1 {
     letter-spacing: -1px;
     line-height: 60px;
     padding-left: 60px;
-    background: url('./images/icon_48.png') left center no-repeat;
+    background: url('../images/icon_48.png') left center no-repeat;
 }
 
 nav {
