@@ -65,13 +65,13 @@
                     Math.min(
                         matrix[i - 1][j] + 2, // deletion
                         matrix[i][j - 1] + 2, // insertion
-                        matrix[i - 1][j - 1] + cost, // substitution
+                        matrix[i - 1][j - 1] + cost * 2, // substitution
                         matrix[i - 2][j - 2] + cost // transposition
                     ) :
                     Math.min(
                         matrix[i - 1][j] + 2, // deletion
                         matrix[i][j - 1] + 2, // insertion
-                        matrix[i - 1][j - 1] + cost // substitution
+                        matrix[i - 1][j - 1] + cost * 2 // substitution
                     );
             }
         }
