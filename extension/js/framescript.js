@@ -291,13 +291,13 @@
     }
 
     /**
-     * Computes a levenshtein distance tolerance for a given length of a word.
-     * @param  {String} length Length of a word (ideally of the correct answer).
-     * @return {Number}        Tolerable distance.
+     * Computes a levenshtein distance tolerance for a given word.
+     * @param  {String} word Word for which the distance tolerance is computed.
+     * @return {Number}      Tolerated distance.
      */
-    function distanceTolerance(length) {
-        return (length > 2)
-            ? Math.floor(Math.pow(length, 1/3))
+    function distanceTolerance(word) {
+        return (word.length > 2)
+            ? Math.floor(Math.pow(word.length, 1/3))
             : 0;
     }
 
@@ -310,7 +310,7 @@
     function isCorrectAnswer(userAnswer, correctAnswer) {
         return (userAnswer === correctAnswer) ||
             (getEditDistance(userAnswer, correctAnswer) <=
-                distanceTolerance(correctAnswer.length));
+                distanceTolerance(correctAnswer));
     }
 
     /**
