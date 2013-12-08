@@ -50,7 +50,7 @@
         var matrix = [],
             i, j, cost;
 
-        // ...
+        // Initialize the matrix with doubled edit cost:
         for (i = 0; i <= a.length; i += 1) {
             matrix[i] = [i * 2];
         }
