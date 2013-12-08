@@ -10,7 +10,7 @@
 // 6. Start the timer;
 // 7. Wait for the user to answer the question;
 // 8. Stop the timer;
-// 9. If user answered correctly – proceed to the page and request a cleanup;
+// 9. If user answered correctly proceed to the page and request a cleanup;
 // 10. Display the correct answer;
 // 11. Request another random dictionary entry from the backround page;
 // 12. Construct another question's GUI off screen;
@@ -47,8 +47,7 @@
      * @return {Number}   The computed distance.
      */
     function weightedEditDistance(a, b) {
-        var matrix = [],
-            i, j, cost;
+        var matrix = [], cost, i, j;
 
         // Initialize the matrix with doubled edit cost:
         for (i = 0; i <= a.length; i += 1) {
@@ -297,9 +296,9 @@
      * @return {Number}      Tolerated distance.
      */
     function distanceTolerance(word) {
-        return (word.length > 2)
-            ? Math.floor(Math.pow(word.length, 1/3))
-            : 0;
+        return (word.length > 2) ?
+            Math.floor(Math.pow(word.length, 1 / 3)) :
+            0;
     }
 
     /**
