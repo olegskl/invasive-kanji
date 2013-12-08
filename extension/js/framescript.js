@@ -46,15 +46,16 @@
      * @param  {String} b Reference word.
      * @return {Number}   The computed distance.
      */
-    function getEditDistance(a, b) {
+    function weightedEditDistance(a, b) {
         var matrix = [],
             i, j, cost;
 
+        // ...
         for (i = 0; i <= a.length; i += 1) {
-            matrix[i] = [i];
+            matrix[i] = [i * 2];
         }
         for (i = 0; i <= b.length; i += 1) {
-            matrix[0][i] = i;
+            matrix[0][i] = i * 2;
         }
 
         for (i = 1; i <= a.length; i += 1) {
@@ -309,7 +310,7 @@
      */
     function isCorrectAnswer(userAnswer, correctAnswer) {
         return (userAnswer === correctAnswer) ||
-            (getEditDistance(userAnswer, correctAnswer) <=
+            (weightedEditDistance(userAnswer, correctAnswer) <=
                 distanceTolerance(correctAnswer));
     }
 
