@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*globals chrome */
+/*globals chrome, addEventHandlerCalledOnce, weightedEditDistance */
 
 // -------------------------- Step-by-step procedure ---------------------------
 // 1. Request a random dictionary entry from the background page;
@@ -10,7 +10,7 @@
 // 6. Start the timer;
 // 7. Wait for the user to answer the question;
 // 8. Stop the timer;
-// 9. If user's answer is correct – proceed to the page and request a cleanup;
+// 9. If user answered correctly proceed to the page and request a cleanup;
 // 10. Display the correct answer;
 // 11. Request another random dictionary entry from the backround page;
 // 12. Construct another question's GUI off screen;
@@ -18,10 +18,11 @@
 // 14. Transition the GUI to the screen;
 // 15. Goto #6.
 
-(function (document, extension) {
+(function (document, runtime) {
     'use strict';
 
-    var wrapper = document.body,
+    var kanjiLookupURL = 'http://jisho.org/kanji/details/%s',
+        wrapper = document.body,
         questions = [], // list of questions to be asked
         currentQuestion,
         infoElement = document.getElementById('info'),
@@ -38,37 +39,6 @@
      * @return {Undefined} Returns nothing.
      */
     function noop() {}
-
-    /**
-     * Assigns an event handler that is only executed once, then removed.
-     * @param {Object}   subject      Observable subject.
-     * @param {String}   eventName    Event name.
-     * @param {Function} eventHandler Event handler.
-     */
-    function addEventHandlerCalledOnce(subject, eventName, eventHandler) {
-
-        function eventHandlerCalledOnce() {
-            // Unsubscribe self:
-            subject.removeEventListener(eventName, eventHandlerCalledOnce);
-            // This is going to happen only once:
-            eventHandler();
-        }
-
-        // Validate subject for correctness to avoid cryptic error later:
-        if (!subject || typeof subject !== 'object' ||
-                typeof subject.addEventListener !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Invalid subject object.');
-        }
-        // Event handler must be a function:
-        if (typeof eventHandler !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Callback must be a function.');
-        }
-
-        // It is now safe to add event eventHandler to the subject object:
-        subject.addEventListener(eventName, eventHandlerCalledOnce);
-    }
 
     /**
      * Clears the ticking timer (if any) and cleans-up references.
@@ -95,7 +65,7 @@
         // Because this code runs in an iframe that has a different domain than
         // the actual page, we need to delegate the removal of the iframe to
         // the contentscript (via background page):
-        extension.sendMessage({proceedToPage: true});
+        runtime.sendMessage({proceedToPage: true});
     }
 
     /**
@@ -104,7 +74,7 @@
      * @return {Undefined}
      */
     function requestRandomDictionaryEntry(callback) {
-        extension.sendMessage('randomDictionaryEntryRequest', callback);
+        runtime.sendMessage('randomDictionaryEntryRequest', callback);
     }
 
     /**
@@ -113,7 +83,7 @@
      * @return {Undefined}
      */
     function requestFrameVisibility(callback) {
-        extension.sendMessage('frameVisibilityRequest', callback);
+        runtime.sendMessage('frameVisibilityRequest', callback);
     }
 
     // The stupid stealFocus function should probably be broken down in two,
@@ -131,7 +101,7 @@
         }
         // Notify the background script that we would like to have focus back,
         // and when the theft is authorized - perform it:
-        extension.sendMessage({storeFocus: true}, function (response) {
+        runtime.sendMessage({storeFocus: true}, function (response) {
             // Ensure the response is an object:
             if (!response) { response = {}; }
 
@@ -197,13 +167,22 @@
     /**
      * Simplifies an answer by removing extraneous information in brackets.
      * @example
+     *     simplifyCorrectAnswer(" whitespace "); // "whitespace"
+     *     simplifyCorrectAnswer("a unit"); // "unit"
+     *     simplifyCorrectAnswer("the government"); // "government"
+     *     simplifyCorrectAnswer("take a seat"); // "take a seat" - no change
+     *     simplifyCorrectAnswer("fetch the ball"); // "fetch the ball"
      *     simplifyCorrectAnswer("second (1/60 minute)"); // "second"
+     *     simplifyCorrectAnswer("a second (1/60 minute)"); // "second"
      *     simplifyCorrectAnswer("(used phonetically)"); // ""
      * @param  {String} answer Any singular answer.
      * @return {String}        Simplified answer.
      */
     function simplifyCorrectAnswer(answer) {
-        return answer.replace(/ ?\(.*\)/g, '').trim();
+        return answer.trim() // trim any extra white space: " abc " -> "abc"
+            .replace(/^a |^the /, '') // strip articles in the beginning
+            .replace(/ ?\(.*\)/g, '') // strip brackets and their contents
+            .trim(); // extra trim to catch edge cases
     }
 
     /**
@@ -242,6 +221,29 @@
     }
 
     /**
+     * Computes a levenshtein distance tolerance for a given word.
+     * @param  {String} word Word for which the distance tolerance is computed.
+     * @return {Number}      Tolerated distance.
+     */
+    function distanceTolerance(word) {
+        return (word.length > 2) ?
+            Math.floor(Math.pow(word.length, 1 / 3)) :
+            0;
+    }
+
+    /**
+     * Validates a given answer for correctness with adjustment for typos.
+     * @param  {String}  userAnswer    Answer provided by the user.
+     * @param  {String}  correctAnswer Correct answer from the dictionary.
+     * @return {Boolean}               TRUE if correct even if typos are present
+     */
+    function isCorrectAnswer(userAnswer, correctAnswer) {
+        return (userAnswer === correctAnswer) ||
+            (weightedEditDistance(userAnswer, correctAnswer) <=
+                distanceTolerance(correctAnswer));
+    }
+
+    /**
      * Validates a given set of answers for correctness.
      * @param  {Array}   userAnswers    Answers provided by user.
      * @param  {Array}   correctAnswers Correct answers from the dictionary.
@@ -250,7 +252,9 @@
     function areCorrectAnswers(userAnswers, correctAnswers) {
         // Every item in the answer set provided by user must be correct:
         return userAnswers.every(function (userAnswer) {
-            return (correctAnswers.indexOf(userAnswer) !== -1);
+            return correctAnswers.some(function (correctAnswer) {
+                return isCorrectAnswer(userAnswer, correctAnswer);
+            });
         });
     }
 
@@ -348,9 +352,72 @@
         // Clear the timer so that it doesn't kick in during transition:
         clearTimer();
 
-        setTimeout(function () {
-            container.classList.remove('offscreen');
-        }, 1);
+        // We now want the container to become visible, so removing "offscreen"
+        // class is necessary:
+        container.classList.remove('offscreen');
+    }
+
+    /**
+     * Constructs question structure.
+     * @param  {Boolean} isOffScreen Whether to render on or off screen.
+     * @return {Object}              An object containing DOM nodes.
+     */
+    function buildQuestionStructure(isOffScreen) {
+        var nodes = {
+                container: document.createElement('div'),
+                questionElement: document.createElement('a'),
+                answerElement: document.createElement('input'),
+                correctAnswerElement: document.createElement('div'),
+                readingsElement: document.createElement('div')
+            };
+
+        // Set more styles before appending:
+        nodes.questionElement.className = 'question';
+        nodes.answerElement.className = 'answer';
+        nodes.readingsElement.className = 'readings';
+
+        // When adding a first question, it is added directly on page and event
+        // handlers are assigned; otherwise, the question is created off screen
+        // and doesn't respond to user activity until necessary:
+        if (isOffScreen) {
+            nodes.container.className = 'container offscreen';
+            nodes.correctAnswerElement.className = 'correctAnswer hidden';
+        } else {
+            nodes.answerElement.addEventListener('keypress', keypressHandler);
+            nodes.container.className = 'container';
+            nodes.correctAnswerElement.className = 'correctAnswer';
+        }
+
+        nodes.container.appendChild(nodes.questionElement);
+        nodes.container.appendChild(nodes.answerElement);
+        nodes.container.appendChild(nodes.correctAnswerElement);
+        nodes.container.appendChild(nodes.readingsElement);
+
+        return nodes;
+    }
+
+    /**
+     * Configures the given question element according to the given question.
+     * @param  {NodeElement} element  The element to setup.
+     * @param  {Object}      question A question to use for setup.
+     * @return {Undefined}
+     */
+    function setupQuestionElement(element, question) {
+        // Render the question term inside of the question's DOM element:
+        element.innerHTML = question.term;
+
+        if (question.dictionary === 'kanji') {
+            // External links must open in a new tab, otherwise they won't be
+            // visible because the frame is covering the page:
+            element.target = '_blank';
+
+            // Ensure that the href attribute is properly encoded:
+            element.href = kanjiLookupURL
+                .replace('%s', encodeURIComponent(question.term));
+
+            // Prevent cheating by launching the answer check on link click:
+            addEventHandlerCalledOnce(element, 'click', handleAnswer);
+        }
     }
 
     /**
@@ -359,13 +426,8 @@
      * @return {Undefined}
      */
     function addQuestion(question, callback) {
-        // Create essential elements of the question GUI:
-        var container = document.createElement('div'),
-            questionElement = document.createElement('div'),
-            answerElement = document.createElement('input'),
-            correctAnswerElement = document.createElement('div'),
-            readingsElement = document.createElement('div'),
-            isFirstQuestion = !questions.length;
+        var isFirstQuestion = !questions.length,
+            nodes;
 
         // The question must be an object:
         if (!question || typeof question !== 'object') {
@@ -378,21 +440,12 @@
             return;
         }
 
-        // When adding a first question, it is added directly on page and event
-        // handlers are assigned; otherwise, the question is created off screen
-        // and doesn't respond to user activity until necessary:
-        if (isFirstQuestion) {
-            currentQuestion = question;
-            answerElement.addEventListener('keypress', keypressHandler);
-            container.className = 'container';
-            correctAnswerElement.className = 'correctAnswer';
-        } else {
-            container.className = 'container offscreen';
-            correctAnswerElement.className = 'correctAnswer hidden';
-        }
+        // Create essential elements of the question GUI and keep references
+        // to various elements of the question GUI:
+        nodes = question.nodes = buildQuestionStructure(!isFirstQuestion);
 
         // A workaround to avoid asking for hiragana/katakana meanings:
-        answerElement.placeholder = (question.meanings) ?
+        nodes.answerElement.placeholder = (question.meanings) ?
             'type the meaning...' :
             'type the reading...';
 
@@ -400,39 +453,22 @@
         // that we need to hint readings and not display meanings at all,
         // otherwise it would be answering the question itself:
         if (question.meanings && question.readings) {
-            readingsElement.innerHTML = question.readings.join(', ');
+            nodes.readingsElement.innerHTML = question.readings.join(', ');
         }
 
-        // Render the question term inside of the question's DOM element:
-        questionElement.innerHTML = question.term;
+        // The actual question text, event handlers, etc.:
+        setupQuestionElement(nodes.questionElement, question);
 
-        // Set more styles before appending:
-        questionElement.className = 'question';
-        answerElement.className = 'answer';
-        readingsElement.className = 'readings';
+        // Add the question structure to the document:
+        wrapper.appendChild(question.nodes.container);
 
-        container.appendChild(questionElement);
-        container.appendChild(answerElement);
-        container.appendChild(correctAnswerElement);
-        container.appendChild(readingsElement);
-
-        // Keep references to various elements of the question GUI:
-        question.nodes = {
-            container: container,
-            questionElement: questionElement,
-            answerElement: answerElement,
-            correctAnswerElement: correctAnswerElement,
-            readingsElement: readingsElement
-        };
-
-        wrapper.appendChild(container);
-
-        // Finally add the question to the question pool to keep track of all
-        // questions that have been added:
+        // Add the question to the question pool to keep track of all questions
+        // that have been added:
         questions.push(question);
 
-        // Focus the cursor on the answer field:
         if (isFirstQuestion) {
+            currentQuestion = question;
+            // Request focus of the cursor on the answer field:
             stealFocus(callback);
         } else {
             callback({error: null});
@@ -521,24 +557,32 @@
     }
 
     /**
-     * Handler for keypress events in any particular answer field.
-     * @param  {Object}    event Event object.
+     * Handles user answer for the current question.
      * @return {Undefined}
      */
-    function keypressHandler(event) {
-        // Only wait for the "enter" key to be pressed:
-        if (event.which !== 13) { return; }
-
+    function handleAnswer() {
         // Clean up event handlers:
         window.removeEventListener('blur', stealFocus);
-        // currentQuestion.nodes.answerElement
-        event.target.removeEventListener('keypress', keypressHandler);
+        currentQuestion.nodes.answerElement
+            .removeEventListener('keypress', keypressHandler);
 
         // Decide what to do next:
         if (userAnsweredCorrectly(currentQuestion)) {
             handleCorrectAnswer();
         } else {
             handleIncorrectAnswer();
+        }
+    }
+
+    /**
+     * Handler for keypress events in any particular answer field.
+     * @param  {Object}    event Event object.
+     * @return {Undefined}
+     */
+    function keypressHandler(event) {
+        // Only wait for the "enter" key to be pressed:
+        if (event.which === 13) {
+            handleAnswer();
         }
     }
 
@@ -596,4 +640,4 @@
 
     });
 
-}(document, chrome.extension));
+}(document, chrome.runtime));
