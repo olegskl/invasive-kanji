@@ -1,5 +1,5 @@
 /*jslint browser: true, devel: true */
-/*globals chrome */
+/*globals chrome, addEventHandlerCalledOnce, weightedEditDistance */
 
 // -------------------------- Step-by-step procedure ---------------------------
 // 1. Request a random dictionary entry from the background page;
@@ -39,76 +39,6 @@
      * @return {Undefined} Returns nothing.
      */
     function noop() {}
-
-    /**
-     * Compute weighted edit distance (Damerau-Levenshtein) between two words.
-     * @param  {String} a Compared word.
-     * @param  {String} b Reference word.
-     * @return {Number}   The computed distance.
-     */
-    function weightedEditDistance(a, b) {
-        var matrix = [], cost, i, j;
-
-        // Initialize the matrix with doubled edit cost:
-        for (i = 0; i <= a.length; i += 1) {
-            matrix[i] = [i * 2];
-        }
-        for (i = 0; i <= b.length; i += 1) {
-            matrix[0][i] = i * 2;
-        }
-
-        for (i = 1; i <= a.length; i += 1) {
-            for (j = 1; j <= b.length; j += 1) {
-                cost = (a[i - 1] === b[j - 1]) ? 0 : 1;
-                matrix[i][j] = (i > 1 && j > 1 &&
-                        (a[i - 1] === b[j - 2]) && (a[i - 2] === b[j - 1])) ?
-                    Math.min(
-                        matrix[i - 1][j] + 2, // deletion
-                        matrix[i][j - 1] + 2, // insertion
-                        matrix[i - 1][j - 1] + cost * 2, // substitution
-                        matrix[i - 2][j - 2] + cost // transposition
-                    ) :
-                    Math.min(
-                        matrix[i - 1][j] + 2, // deletion
-                        matrix[i][j - 1] + 2, // insertion
-                        matrix[i - 1][j - 1] + cost * 2 // substitution
-                    );
-            }
-        }
-
-        return matrix[a.length][b.length];
-    }
-
-    /**
-     * Assigns an event handler that is only executed once, then removed.
-     * @param {Object}   subject      Observable subject.
-     * @param {String}   eventName    Event name.
-     * @param {Function} eventHandler Event handler.
-     */
-    function addEventHandlerCalledOnce(subject, eventName, eventHandler) {
-
-        function eventHandlerCalledOnce() {
-            // Unsubscribe self:
-            subject.removeEventListener(eventName, eventHandlerCalledOnce);
-            // This is going to happen only once:
-            eventHandler();
-        }
-
-        // Validate subject for correctness to avoid cryptic error later:
-        if (!subject || typeof subject !== 'object' ||
-                typeof subject.addEventListener !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Invalid subject object.');
-        }
-        // Event handler must be a function:
-        if (typeof eventHandler !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Callback must be a function.');
-        }
-
-        // It is now safe to add event eventHandler to the subject object:
-        subject.addEventListener(eventName, eventHandlerCalledOnce);
-    }
 
     /**
      * Clears the ticking timer (if any) and cleans-up references.

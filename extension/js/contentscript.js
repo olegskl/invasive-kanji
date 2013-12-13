@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*globals chrome */
+/*globals chrome, addEventHandlerCalledOnce */
 
 (function (document, runtime) {
     'use strict';
@@ -18,37 +18,6 @@
      * @return {Undefined}
      */
     function noop() {}
-
-    /**
-     * Assigns an event handler that is only executed once.
-     * @param {Object}   subject     An observervable subject.
-     * @param {String}   eventName    Event name.
-     * @param {Function} eventHandler The event handler function.
-     */
-    function addEventHandlerCalledOnce(subject, eventName, eventHandler) {
-
-        function eventHandlerCalledOnce() {
-            // Unsubscribe self:
-            subject.removeEventListener(eventName, eventHandlerCalledOnce);
-            // This is going to happen only once:
-            eventHandler();
-        }
-
-        // Validate subject for correctness to avoid cryptic error later:
-        if (!subject || typeof subject !== 'object' ||
-                typeof subject.addEventListener !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Invalid subject object.');
-        }
-        // Event handler must be a function:
-        if (typeof eventHandler !== 'function') {
-            throw new TypeError('Unable to assign a eventHandler called once.' +
-                    ' Callback must be a function.');
-        }
-
-        // It is now safe to add event eventHandler to the subject object:
-        subject.addEventListener(eventName, eventHandlerCalledOnce);
-    }
 
     /**
      * Attempts to restore the previously-stolen focus and clears reference.

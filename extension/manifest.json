@@ -24,7 +24,10 @@
             "http://translate.google.com/*",
             "https://*/*invasive-kanji*"
         ],
-        "js": ["js/contentscript.js"]
+        "js": [
+            "js/once.js",
+            "js/contentscript.js"
+        ]
     }],
     "web_accessible_resources": [
         "images/icon_48.png",
