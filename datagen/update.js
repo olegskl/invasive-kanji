@@ -17,6 +17,15 @@ var kanjidicSettingsFile = './settings-kanjidic.json',
     convert = require('./convertor.js');
 
 /**
+ * Outputs an error to the console.
+ * @param  {*} error Error message.
+ * @return {Undefined}
+ */
+function consoleError(error) {
+    console.error(error);
+}
+
+/**
  * Final callback called when the program is finished.
  * @param  {Object} err Error object.
  * @return {Undefined}
@@ -28,9 +37,7 @@ function done(err) {
         console.log('\x1b[31mFinished with errors.\x1b[0m');
         // There can be multiple errors:
         if (util.isArray(err)) {
-            err.forEach(function (error) {
-                console.error(error);
-            });
+            err.forEach(consoleError);
         } else {
             console.error(err);
         }
