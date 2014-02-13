@@ -2,10 +2,6 @@
 
 'use strict';
 
-// Start a timer to track the duration of the program:
-// (using color codes: 32m = green, 0m = reset)
-console.time('\x1b[32mFinished successfully.\x1b[0m Time taken');
-
 var kanjidicSettingsFile = './settings-kanjidic.json',
     assemblySettingsFile = './settings-assembly.json',
     fs = require('fs'),
@@ -14,7 +10,14 @@ var kanjidicSettingsFile = './settings-kanjidic.json',
     util = require('util'),
     spawn = require('child_process').spawn,
     iconv = spawn('iconv', ['-f', 'euc-jp', '-t', 'utf-8']),
-    convert = require('./convertor.js');
+    convert = require('./convertor.js'),
+    // (using color codes: 32m = green, 31m = red, 0m = reset)
+    successMessage = '\x1b[32mFinished successfully.\x1b[0m',
+    errorMessage = '\x1b[31mFinished with errors.\x1b[0m',
+    timeMessage = 'Time taken';
+
+// Start a timer to track the duration of the program:
+console.time(timeMessage);
 
 /**
  * Outputs an error to the console.
@@ -33,8 +36,7 @@ function consoleError(error) {
 function done(err) {
     if (err) {
         // Finished with errors; log info to stdout and error to stderr:
-        // (using color codes: 31m = red, 0m = reset)
-        console.log('\x1b[31mFinished with errors.\x1b[0m');
+        console.log(errorMessage);
         // There can be multiple errors:
         if (util.isArray(err)) {
             err.forEach(consoleError);
@@ -43,8 +45,8 @@ function done(err) {
         }
     } else {
         // Finished successfully; log info and timer to stdout:
-        // (using color codes: 32m = green, 0m = reset)
-        console.timeEnd('\x1b[32mFinished successfully.\x1b[0m Time taken');
+        console.log(successMessage);
+        console.timeEnd(timeMessage);
     }
 }
 
