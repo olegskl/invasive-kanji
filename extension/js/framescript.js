@@ -620,7 +620,7 @@
         // Attempt to add the first question:
         addQuestion(response.entry, function (response) {
             if (response && response.error) {
-                console.log('Failed to add a question.');
+                console.error('Failed to add a question. ' + response.error);
                 proceedToPage();
                 return;
             }
@@ -629,7 +629,8 @@
             // user so that the background script is able to set the timer:
             requestFrameVisibility(function (response) {
                 if (response && response.error) {
-                    console.log('Failed to request frame visibility.');
+                    console.error('Failed to request frame visibility. ' +
+                        response.error);
                     proceedToPage();
                 } else {
                     // === Step 6 ===
