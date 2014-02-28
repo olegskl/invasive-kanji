@@ -110,7 +110,8 @@ function assemble(settings, callback) {
                 callback(errors);
             } else {
                 // Combine dictionaries into a single array:
-                assembly = [].concat(settings.sources.map(dictionaryAccessor));
+                assembly = Array.prototype.concat.apply([],
+                    settings.sources.map(dictionaryAccessor));
                 // Write the result to the destination file:
                 fs.writeFile(settings.destinationFilePath,
                     JSON.stringify(assembly), 'utf8', callback);
@@ -174,7 +175,7 @@ fs.readFile(kanjidicSettingsFile, 'utf8', function (err, res) {
             res.pipe(zlib.createGunzip()).pipe(iconv.stdin);
         } else {
             util.print('failed (' + statusCode + ').\n');
-            console.log('Attempting previously downloaded file instead...');
+            console.log('Attempting previously downloaded file instead.');
             performConversion(settings);
         }
     }).on('error', done);
