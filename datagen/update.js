@@ -166,6 +166,8 @@ fs.readFile(kanjidicSettingsFile, 'utf8', function (err, res) {
         var statusCode = res.statusCode;
         if (statusCode >= 200 && statusCode < 300) {
             util.print('done.\n');
+            // The remote kanjidic file is compressed and encoded in EUC-JP,
+            // so we need to pipe it to iconv and zlib:
             util.print('Downloading, unzipping and converting to UTF8... ');
             iconv.stdout.pipe(fs.createWriteStream(settings.sourceFile))
                 .on('close', function () {
