@@ -404,7 +404,7 @@
      */
     function setupQuestionElement(element, question) {
         // Render the question term inside of the question's DOM element:
-        element.innerHTML = question.term;
+        element.textContent = question.term;
 
         if (question.dictionary === 'kanji') {
             // External links must open in a new tab, otherwise they won't be
@@ -453,7 +453,7 @@
         // that we need to hint readings and not display meanings at all,
         // otherwise it would be answering the question itself:
         if (question.meanings && question.readings) {
-            nodes.readingsElement.innerHTML = question.readings.join(', ');
+            nodes.readingsElement.textContent = question.readings.join(', ');
         }
 
         // The actual question text, event handlers, etc.:
@@ -517,7 +517,7 @@
         // questionElement.classList.add('incorrect');
 
         // Display correct answer:
-        correctAnswerElement.innerHTML = (currentQuestion.meanings) ?
+        correctAnswerElement.textContent = (currentQuestion.meanings) ?
             currentQuestion.meanings.join(', ') :
             currentQuestion.readings.join(', ');
 
