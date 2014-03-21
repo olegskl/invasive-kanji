@@ -32,13 +32,24 @@
         focusTheftCount = 0,
         timer,
         timerDuration = 10000,
-        transitionEndEventName = 'webkitTransitionEnd'; // vendor prefixes...
+        containerTransitionDuration = 250;
 
     /**
      * Noop does nothing.
      * @return {Undefined} Returns nothing.
      */
     function noop() {}
+
+    /**
+     * Hides a DOM element allowing CSS transitions.
+     * @param  {DOMElement} element DOM element to hide.
+     * @return {Undefined}
+     */
+    function hide(element) {
+        setTimeout(function () {
+            element.style.opacity = 0;
+        }, 1);
+    }
 
     /**
      * Clears the ticking timer (if any) and cleans-up references.
@@ -341,13 +352,15 @@
 
         setupAnswerElement(question.nodes.answerElement);
 
+        // Hide the current question to avoid overlap:
+        hide(currentQuestion.nodes.container);
+
         // Keep a reference to the question as current:
         // (mind that we need to do it before re)
         currentQuestion = question;
 
-        // Set up a handler for transition end event:
-        container.addEventListener(transitionEndEventName,
-            containerTransitionEndHandler);
+        // Set up a handler for transition end of the container:
+        setTimeout(containerTransitionEndHandler, containerTransitionDuration);
 
         // Clear the timer so that it doesn't kick in during transition:
         clearTimer();
