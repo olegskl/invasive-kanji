@@ -10,7 +10,7 @@ There are many features planned ahead. If you have suggestions or problems using
 
 ### Installation
 
-1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/download/0.6.5/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
+1. Download the **[latest available version](https://github.com/olegskl/invasive-kanji/releases/download/0.6.6/invasive-kanji-extension.zip)** and unarchive to your preferred location (whichever suits you).
 2. Using **Google Chrome** browser, navigate to chrome://extensions/ and enable "Developer mode" in the upper right corner.
 3. Click on the <kbd>Load unpacked extension...</kbd> button, browse to the unarchived directory of the downloaded release and confirm.
 

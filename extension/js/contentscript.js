@@ -1,5 +1,5 @@
 /*jslint browser: true */
-/*globals chrome, addEventHandlerCalledOnce */
+/*globals chrome */
 
 (function (document, runtime) {
     'use strict';
@@ -11,7 +11,7 @@
         documentHiddenProperty = 'hidden',
         activeElement,
         extensionBaseURL = 'chrome-extension://' + runtime.id,
-        transitionEventName = 'webkitTransitionEnd';
+        frameTransitionDuration = 500;
 
     /**
      * The default noop function.
@@ -67,10 +67,10 @@
         if (currentOpacity === opacity || (opacity === 0 && !currentOpacity)) {
             callback({error: null});
         } else {
-            addEventHandlerCalledOnce(element, transitionEventName, callback);
             setTimeout(function () {
                 element.style.opacity = opacity;
             }, 1);
+            setTimeout(callback, frameTransitionDuration);
         }
     }
 

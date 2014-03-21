@@ -24,8 +24,8 @@ html, body {
     background: none;
     -webkit-transform: translateX(0%);
     transform: translateX(0%);
-    -webkit-transition: -webkit-transform 0.2s ease-out 0s;
-    transition: transform 0.2s ease-out 0s;
+    -webkit-transition: -webkit-transform 0.2s ease-out 0s, opacity 0.2s;
+    transition: transform 0.2s ease-out 0s, opacity 0.2s;
     z-index: 0;
 }
 

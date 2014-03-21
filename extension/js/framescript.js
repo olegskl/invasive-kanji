@@ -32,13 +32,34 @@
         focusTheftCount = 0,
         timer,
         timerDuration = 10000,
-        transitionEndEventName = 'webkitTransitionEnd'; // vendor prefixes...
+        containerTransitionDuration = 250;
 
     /**
      * Noop does nothing.
      * @return {Undefined} Returns nothing.
      */
     function noop() {}
+
+    /**
+     * Logs to console a message prefixed with the extension name.
+     * @return {Undefined}
+     */
+    function log() {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('Invasive Kanji Extension:');
+        console.log.apply(console, args);
+    }
+
+    /**
+     * Hides a DOM element allowing CSS transitions.
+     * @param  {DOMElement} element DOM element to hide.
+     * @return {Undefined}
+     */
+    function hide(element) {
+        setTimeout(function () {
+            element.style.opacity = 0;
+        }, 1);
+    }
 
     /**
      * Clears the ticking timer (if any) and cleans-up references.
@@ -341,13 +362,15 @@
 
         setupAnswerElement(question.nodes.answerElement);
 
+        // Hide the current question to avoid overlap:
+        hide(currentQuestion.nodes.container);
+
         // Keep a reference to the question as current:
         // (mind that we need to do it before re)
         currentQuestion = question;
 
-        // Set up a handler for transition end event:
-        container.addEventListener(transitionEndEventName,
-            containerTransitionEndHandler);
+        // Set up a handler for transition end of the container:
+        setTimeout(containerTransitionEndHandler, containerTransitionDuration);
 
         // Clear the timer so that it doesn't kick in during transition:
         clearTimer();
@@ -404,7 +427,7 @@
      */
     function setupQuestionElement(element, question) {
         // Render the question term inside of the question's DOM element:
-        element.innerHTML = question.term;
+        element.textContent = question.term;
 
         if (question.dictionary === 'kanji') {
             // External links must open in a new tab, otherwise they won't be
@@ -453,7 +476,7 @@
         // that we need to hint readings and not display meanings at all,
         // otherwise it would be answering the question itself:
         if (question.meanings && question.readings) {
-            nodes.readingsElement.innerHTML = question.readings.join(', ');
+            nodes.readingsElement.textContent = question.readings.join(', ');
         }
 
         // The actual question text, event handlers, etc.:
@@ -517,7 +540,7 @@
         // questionElement.classList.add('incorrect');
 
         // Display correct answer:
-        correctAnswerElement.innerHTML = (currentQuestion.meanings) ?
+        correctAnswerElement.textContent = (currentQuestion.meanings) ?
             currentQuestion.meanings.join(', ') :
             currentQuestion.readings.join(', ');
 
@@ -611,8 +634,7 @@
         // If background script fails to deliver a valid dictionary entry, then
         // we abort the operation by issuing a request to proceed to page:
         if (!response || response.error) {
-            console.log('Failed to request a dictionary entry. ' +
-                response.error);
+            log('Failed to request a dictionary entry.', response.error);
             proceedToPage();
             return;
         }
@@ -620,7 +642,7 @@
         // Attempt to add the first question:
         addQuestion(response.entry, function (response) {
             if (response && response.error) {
-                console.log('Failed to add a question.');
+                log('Failed to add a question.', response.error);
                 proceedToPage();
                 return;
             }
@@ -629,7 +651,7 @@
             // user so that the background script is able to set the timer:
             requestFrameVisibility(function (response) {
                 if (response && response.error) {
-                    console.log('Failed to request frame visibility.');
+                    log('Failed to request frame visibility.', response.error);
                     proceedToPage();
                 } else {
                     // === Step 6 ===
