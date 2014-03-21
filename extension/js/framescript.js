@@ -41,6 +41,16 @@
     function noop() {}
 
     /**
+     * Logs to console a message prefixed with the extension name.
+     * @return {Undefined}
+     */
+    function log() {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift('Invasive Kanji Extension:');
+        console.log.apply(console, args);
+    }
+
+    /**
      * Hides a DOM element allowing CSS transitions.
      * @param  {DOMElement} element DOM element to hide.
      * @return {Undefined}
@@ -624,8 +634,7 @@
         // If background script fails to deliver a valid dictionary entry, then
         // we abort the operation by issuing a request to proceed to page:
         if (!response || response.error) {
-            console.log('Failed to request a dictionary entry. ' +
-                response.error);
+            log('Failed to request a dictionary entry.', response.error);
             proceedToPage();
             return;
         }
@@ -633,7 +642,7 @@
         // Attempt to add the first question:
         addQuestion(response.entry, function (response) {
             if (response && response.error) {
-                console.error('Failed to add a question. ' + response.error);
+                log('Failed to add a question.', response.error);
                 proceedToPage();
                 return;
             }
@@ -642,8 +651,7 @@
             // user so that the background script is able to set the timer:
             requestFrameVisibility(function (response) {
                 if (response && response.error) {
-                    console.error('Failed to request frame visibility. ' +
-                        response.error);
+                    log('Failed to request frame visibility.', response.error);
                     proceedToPage();
                 } else {
                     // === Step 6 ===
